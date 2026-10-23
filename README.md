@@ -14,11 +14,11 @@ You write no types by hand. A controller that returns `Inertia::render('posts/in
 ## Requirements
 
 - PHP 8.3 or newer and Laravel 12 or 13
-- `dedoc/scramble` 0.13.20 to 0.13.23
+- `dedoc/scramble` 0.13.22 or 0.13.23
 - `inertiajs/inertia-laravel` 2 or 3
 - Node 22.18 or newer and Vite 6 or newer
 
-Scramble 0.13.24 to 0.13.29 loop on controllers that return `redirect()`. Scramble 0.13.30 removed the paginator type managers that `InertiaExtension` uses. Support for newer Scramble versions is planned.
+Scramble 0.13.21 and older have a remote code execution vulnerability (GHSA-4rm2-28vj-fj39). Scramble 0.13.24 to 0.13.29 loop on controllers that return `redirect()`. Scramble 0.13.30 removed the paginator type managers that `InertiaExtension` uses. Support for newer Scramble versions is planned.
 
 ## Installation
 
