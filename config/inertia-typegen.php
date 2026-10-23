@@ -1,6 +1,44 @@
 <?php
 
-// config for Vagebond/InertiaTypegen
-return [
+declare(strict_types=1);
 
+use Vagebond\InertiaTypegen\Extensions\ArrayableExtension;
+use Vagebond\InertiaTypegen\Extensions\CacheTypeInfer;
+use Vagebond\InertiaTypegen\Extensions\CallbackExtension;
+use Vagebond\InertiaTypegen\Extensions\CastablePropertyExtension;
+use Vagebond\InertiaTypegen\Extensions\CollectionMethodExtension;
+use Vagebond\InertiaTypegen\Extensions\CommonStaticMethodExtension;
+use Vagebond\InertiaTypegen\Extensions\EnumHelpersExtension;
+use Vagebond\InertiaTypegen\Extensions\InertiaExtension;
+use Vagebond\InertiaTypegen\Extensions\InertiaSharedDataExtension;
+use Vagebond\InertiaTypegen\Extensions\ReflectionMethodReturnTypeExtension;
+use Vagebond\InertiaTypegen\Extensions\RouteMetadataExtension;
+use Vagebond\InertiaTypegen\Extensions\TableTypeInfer;
+use Vagebond\InertiaTypegen\Extensions\ValueOfEnumExtension;
+
+return [
+    'documents' => [
+        'app' => [
+            'route_names' => [''],
+            'uri_prefixes' => [],
+        ],
+    ],
+
+    'enum_helpers' => null,
+
+    'extensions' => [
+        CastablePropertyExtension::class,
+        InertiaExtension::class,
+        CallbackExtension::class,
+        ArrayableExtension::class,
+        EnumHelpersExtension::class,
+        ValueOfEnumExtension::class,
+        CacheTypeInfer::class,
+        CollectionMethodExtension::class,
+        CommonStaticMethodExtension::class,
+        ReflectionMethodReturnTypeExtension::class,
+        InertiaSharedDataExtension::class,
+        TableTypeInfer::class,
+        RouteMetadataExtension::class,
+    ],
 ];

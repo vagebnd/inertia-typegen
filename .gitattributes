@@ -18,3 +18,10 @@
 /UPGRADING.md       export-ignore
 /phpstan.neon.dist  export-ignore
 /phpstan-baseline.neon  export-ignore
+/pint.json          export-ignore
+/js/src             export-ignore
+/js/tests           export-ignore
+/js/tsconfig.json   export-ignore
+/js/tsconfig.build.json export-ignore
+/js/pnpm-lock.yaml  export-ignore
+/js/pnpm-workspace.yaml export-ignore

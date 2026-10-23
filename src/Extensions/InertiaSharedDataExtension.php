@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Vagebond\InertiaTypegen\Extensions;
 
-use Vagebond\InertiaTypegen\Contracts\ProvidesInertiaSharedType;
 use Dedoc\Scramble\Extensions\OperationExtension;
 use Dedoc\Scramble\Support\Generator\Combined\AllOf;
 use Dedoc\Scramble\Support\Generator\Components;
@@ -21,6 +20,8 @@ use Dedoc\Scramble\Support\Type\Type;
 use Illuminate\Http\Response as IlluminateResponse;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Inertia\Middleware as InertiaMiddleware;
+use ReflectionClass;
+use Vagebond\InertiaTypegen\Attributes\InertiaSharedType;
 
 class InertiaSharedDataExtension extends OperationExtension
 {
@@ -130,11 +131,12 @@ class InertiaSharedDataExtension extends OperationExtension
      */
     private function registerSharedSchema(string $middlewareClass, ObjectType $type): ?string
     {
-        if (! is_subclass_of($middlewareClass, ProvidesInertiaSharedType::class)) {
+        $typeName = $this->sharedTypeName($middlewareClass);
+        if ($typeName === null) {
             return null;
         }
 
-        $schemaName = 'InertiaShared' . $middlewareClass::inertiaSharedTypeName();
+        $schemaName = 'InertiaShared' . $typeName;
         $components = $this->openApiTransformer->getComponents();
 
         if (! $components->hasSchema($schemaName)) {
@@ -142,6 +144,22 @@ class InertiaSharedDataExtension extends OperationExtension
         }
 
         return $schemaName;
+    }
+
+    /**
+     * @param  class-string  $middlewareClass
+     */
+    private function sharedTypeName(string $middlewareClass): ?string
+    {
+        for ($class = new ReflectionClass($middlewareClass); $class; $class = $class->getParentClass() ?: null) {
+            $attribute = $class->getAttributes(InertiaSharedType::class)[0] ?? null;
+
+            if ($attribute !== null) {
+                return $attribute->newInstance()->name;
+            }
+        }
+
+        return null;
     }
 
     private function findInertiaMiddleware(RouteInfo $routeInfo): ?string

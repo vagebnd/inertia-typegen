@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Vagebond\InertiaTypegen\Extensions;
 
-use App\Enums\Concerns\EnumHelpers;
 use Dedoc\Scramble\Infer\Extensions\ExpressionTypeInferExtension;
 use Dedoc\Scramble\Infer\Scope\Scope;
 use Dedoc\Scramble\Support\Type\ArrayItemType_;
@@ -13,18 +12,29 @@ use Dedoc\Scramble\Support\Type\KeyedArrayType;
 use Dedoc\Scramble\Support\Type\ObjectType;
 use Dedoc\Scramble\Support\Type\StringType;
 use Dedoc\Scramble\Support\Type\Type;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Collection;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 
 /**
- * Helps Scramble infer return types for methods provided by the EnumHelpers trait.
+ * Helps Scramble infer return types for methods provided by the trait in the
+ * `inertia-typegen.enum_helpers` config value.
  *
  * Without this extension, Scramble cannot resolve `description()`, `toArray()`,
  * `asSelectArray()`, or `collect()` on enums that use the trait.
  */
 class EnumHelpersExtension implements ExpressionTypeInferExtension
 {
+    /**
+     * @param  class-string|null  $trait
+     */
+    public function __construct(
+        #[Config('inertia-typegen.enum_helpers')]
+        private readonly ?string $trait = null,
+    ) {}
+
     public function getType(Expr $node, Scope $scope): ?Type
     {
         if (! $node instanceof Expr\MethodCall && ! $node instanceof Expr\StaticCall) {
@@ -36,7 +46,7 @@ class EnumHelpersExtension implements ExpressionTypeInferExtension
         }
 
         $callerType = $node instanceof Expr\StaticCall
-            ? ($node->class instanceof \PhpParser\Node\Name ? new ObjectType($node->class->toString()) : null)
+            ? ($node->class instanceof Name ? new ObjectType($node->class->toString()) : null)
             : $scope->getType($node->var);
 
         if (! $callerType instanceof ObjectType) {
@@ -61,10 +71,10 @@ class EnumHelpersExtension implements ExpressionTypeInferExtension
 
     private function usesEnumHelpers(string $className): bool
     {
-        if (! class_exists($className) && ! enum_exists($className)) {
+        if ($this->trait === null || (! class_exists($className) && ! enum_exists($className))) {
             return false;
         }
 
-        return in_array(EnumHelpers::class, class_uses_recursive($className));
+        return in_array($this->trait, class_uses_recursive($className));
     }
 }
