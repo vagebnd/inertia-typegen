@@ -1,0 +1,130 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Fixture", "version": "1.0.0" },
+  "paths": {
+    "/dashboard": {
+      "get": {
+        "operationId": "app.dashboard",
+        "x-route-name": "app.dashboard",
+        "x-route-uri": "/dashboard",
+        "x-action": "\\App\\Http\\Controllers\\DashboardController::index",
+        "x-source": "app/Http/Controllers/DashboardController.php:12",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    { "$ref": "#/components/schemas/InertiaSharedApp" },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "posts": { "$ref": "#/components/schemas/TableResource" },
+                        "stats": { "type": "integer" }
+                      },
+                      "required": ["posts", "stats"]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts": {
+      "post": {
+        "operationId": "app.posts.store",
+        "x-route-name": "app.posts.store",
+        "x-route-uri": "/posts",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "published": { "type": "boolean", "default": false }
+                },
+                "required": ["title"]
+              }
+            }
+          }
+        },
+        "responses": { "302": { "description": "" } }
+      }
+    },
+    "/posts/{post}": {
+      "get": {
+        "operationId": "app.posts.show",
+        "x-route-name": "app.posts.show",
+        "x-route-uri": "/posts/{post}",
+        "x-route-keys": { "post": "slug" },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "post": { "$ref": "#/components/schemas/Post" } },
+                  "required": ["post"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "app.posts.delete",
+        "x-route-name": "app.posts.delete",
+        "x-route-uri": "/posts/{post}",
+        "x-route-keys": { "post": "slug" },
+        "responses": { "302": { "description": "" } }
+      }
+    },
+    "/search/{query}": {
+      "get": {
+        "operationId": "app.search",
+        "x-route-name": "app.search",
+        "x-route-uri": "/search/{query?}",
+        "responses": { "302": { "description": "" } }
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "operationId": "app.auth.login",
+        "x-route-name": "login",
+        "x-route-uri": "/auth/login",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [{ "$ref": "#/components/schemas/InertiaSharedApp" }, { "type": "object" }]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "InertiaSharedApp": {
+        "type": "object",
+        "properties": { "appName": { "type": "string" } },
+        "required": ["appName"]
+      },
+      "Post": {
+        "type": "object",
+        "properties": { "slug": { "type": "string" }, "title": { "type": "string" } },
+        "required": ["slug", "title"]
+      },
+      "TableResource": { "type": "object", "title": "TableResource" }
+    }
+  }
+}
