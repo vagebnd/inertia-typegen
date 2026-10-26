@@ -93,6 +93,8 @@ function collectRoutes(document, context) {
             const uri = operation?.['x-route-uri'];
             if (typeof name !== 'string' || typeof uri !== 'string' || routes.has(name))
                 continue;
+            if (name.split('.').some((segment) => !segment))
+                continue;
             const route = {
                 name,
                 method,

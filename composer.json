@@ -35,7 +35,8 @@
         "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpstan/phpstan-phpunit": "^2.0"
+        "phpstan/phpstan-phpunit": "^2.0",
+        "symfony/yaml": "^7.0||^8.0"
     },
     "conflict": {
         "dedoc/scramble": "<0.13.49 || >=0.14"

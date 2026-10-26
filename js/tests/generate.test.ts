@@ -126,6 +126,23 @@ describe('routes', () => {
     assert.match(app, / \* @see \\App\\Http\\Controllers\\DashboardController::index\n \* @see app\/Http\/Controllers\/DashboardController\.php:12\n/)
   })
 
+  it('skips a route whose name is only a group prefix', async () => {
+    const source = document()
+    source.paths!['/drafts'] = {
+      get: {
+        operationId: 'app.posts.',
+        'x-route-name': 'app.posts.',
+        'x-route-uri': '/drafts',
+        responses: {},
+      } as never,
+    }
+
+    const { routes } = await generate(source, options())
+
+    assert.equal(routes!.count, 6)
+    assert.doesNotMatch(routes!.files.get('app/posts/index.ts')!, /export const {2}=|'\/drafts'/)
+  })
+
   it('renders no routes when routes are off', async () => {
     const { routes } = await generate(document(), options({ routes: false }))
 
