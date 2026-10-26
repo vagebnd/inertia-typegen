@@ -24,7 +24,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
-            ScrambleServiceProvider::class,
+            ...class_exists(ScrambleServiceProvider::class) ? [ScrambleServiceProvider::class] : [],
             InertiaServiceProvider::class,
             InertiaTypegenServiceProvider::class,
         ];

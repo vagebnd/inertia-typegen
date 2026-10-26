@@ -14,7 +14,7 @@ You write no types by hand. A controller that returns `Inertia::render('posts/in
 ## Requirements
 
 - PHP 8.3 or newer and Laravel 12 or 13
-- `dedoc/scramble` 0.13.49 or newer
+- `dedoc/scramble` 0.13.49 or newer, as a development dependency
 - `inertiajs/inertia-laravel` 2 or 3
 - Node 22.18 or newer and Vite 6 or newer
 
@@ -22,11 +22,14 @@ Older Scramble versions are not supported. Scramble 0.13.21 and older have a rem
 
 ## Installation
 
-Install the Composer package as a development dependency:
+Install the package as a normal dependency, and Scramble as a development dependency:
 
 ```bash
-composer require --dev vagebond/inertia-typegen
+composer require vagebond/inertia-typegen
+composer require --dev dedoc/scramble
 ```
+
+The JS part is in `vendor/`, and a production build installs it from there. `composer install --no-dev` would leave a development dependency out, and the build would fail. Without Scramble the package does nothing: production gets no Scramble, no routes and no Scramble extensions.
 
 The JS part is in the Composer package. Add it to `package.json` and install it:
 
@@ -91,7 +94,7 @@ class HandleInertiaRequests extends Middleware
 }
 ```
 
-The shared data becomes `Inertia.Shared.App`, and each page type starts with `Inertia.Shared.App &`. PHP loads an attribute class only when code reads the attribute, so production does not need this package.
+The shared data becomes `Inertia.Shared.App`, and each page type starts with `Inertia.Shared.App &`.
 
 ## Vite plugin
 

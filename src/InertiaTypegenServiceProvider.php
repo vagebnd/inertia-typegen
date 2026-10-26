@@ -20,6 +20,10 @@ class InertiaTypegenServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        if (! $this->scrambleIsInstalled()) {
+            return;
+        }
+
         $extensions = array_filter(
             config('inertia-typegen.extensions', []),
             fn(string $extension) => $extension !== EnumHelpersExtension::class || config('inertia-typegen.enum_helpers') !== null,
@@ -33,6 +37,10 @@ class InertiaTypegenServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        if (! $this->scrambleIsInstalled()) {
+            return;
+        }
+
         foreach (config('inertia-typegen.documents', []) as $name => $config) {
             $document = InertiaDocument::fromConfig($name, $config);
 
@@ -44,5 +52,10 @@ class InertiaTypegenServiceProvider extends PackageServiceProvider
                 $api->expose(ui: "/docs/{$name}", document: "/docs/{$name}.json");
             }
         }
+    }
+
+    private function scrambleIsInstalled(): bool
+    {
+        return class_exists(Scramble::class);
     }
 }
