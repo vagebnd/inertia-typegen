@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
+
 it('documents the routes named after the document and the routes under a uri prefix', function () {
     expect(array_keys($this->document()['paths']))->toEqualCanonicalizing([
         '/posts',
@@ -33,7 +35,18 @@ it('prefixes the operation ids of routes under a uri prefix with the document an
     ]);
 });
 
-it('exposes a ui and a json document for each document', function () {
-    $this->get('/docs/app')->assertOk();
-    $this->get('/docs/app.json')->assertOk()->assertJsonStructure(['openapi', 'paths', 'components']);
+it('exposes no document by default', function () {
+    $this->get('/docs/app')->assertNotFound();
+    $this->get('/docs/app.json')->assertNotFound();
+});
+
+it('exposes a ui and a json document when the document asks for it', function () {
+    $this->withoutMiddleware(RestrictedDocsAccess::class);
+
+    $this->get('/docs/exposed')->assertOk();
+    $this->get('/docs/exposed.json')->assertOk()->assertJsonStructure(['openapi', 'paths', 'components']);
+});
+
+it('protects an exposed document with the scramble middleware', function () {
+    $this->get('/docs/exposed.json')->assertForbidden();
 });

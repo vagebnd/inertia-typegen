@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Vagebond\InertiaTypegen\Tests;
 
-use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
+use Dedoc\Scramble\Generator;
+use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\ScrambleServiceProvider;
 use Illuminate\Routing\Router;
 use Inertia\ServiceProvider as InertiaServiceProvider;
@@ -20,13 +21,6 @@ use Vagebond\InertiaTypegen\Tests\Fixtures\Support\WidgetTypeInfer;
 
 class TestCase extends Orchestra
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->withoutMiddleware(RestrictedDocsAccess::class);
-    }
-
     protected function getPackageProviders($app): array
     {
         return [
@@ -48,6 +42,10 @@ class TestCase extends Orchestra
             'app' => [
                 'route_names' => ['app.'],
                 'uri_prefixes' => ['auth/' => 'auth'],
+            ],
+            'exposed' => [
+                'route_names' => ['app.posts.'],
+                'expose' => true,
             ],
         ]);
         $app['config']->set('inertia-typegen.enum_helpers', EnumHelpers::class);
@@ -81,6 +79,6 @@ class TestCase extends Orchestra
      */
     protected function document(string $name = 'app'): array
     {
-        return $this->getJson("/docs/{$name}.json")->assertOk()->json();
+        return json_decode(json_encode(app(Generator::class)(Scramble::getGeneratorConfig($name))), true);
     }
 }

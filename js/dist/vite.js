@@ -2,7 +2,7 @@ import { get as httpGet } from 'node:http';
 import { get as httpsGet } from 'node:https';
 import { basename, join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { loadEnv } from 'vite';
+import { exportDocument, phpCommand } from "./export.js";
 import { generate, writeOutput } from "./generate.js";
 export function typegen(options) {
     const root = process.cwd();
@@ -11,6 +11,7 @@ export function typegen(options) {
     const routes = typeof options.routes === 'string' ? { path: options.routes } : options.routes;
     const routesPath = routes ? resolve(root, routes.path) : undefined;
     const fileName = basename(typesPath);
+    const php = phpCommand(options.php);
     const writeTypes = async (source, outputPath, routesDir, logger) => {
         const output = await generate(source, {
             document,
@@ -34,21 +35,20 @@ export function typegen(options) {
             document,
             typesPath,
             routesPath,
+            php,
             generate(source, logger, outputDir) {
                 return writeTypes(source, outputDir ? join(outputDir, fileName) : typesPath, outputDir && routesPath ? join(outputDir, 'routes') : routesPath, logger);
             },
         },
         async configureServer(server) {
-            const env = loadEnv(server.config.mode, root);
-            const documentUrl = options.documentUrl ?? (env.VITE_APP_URL && `${env.VITE_APP_URL}/docs/${document}.json`);
-            if (!documentUrl)
-                return;
+            const { documentUrl } = options;
+            const readDocument = () => (documentUrl ? fetchDocument(documentUrl) : exportDocument(document, root, php));
             const logger = server.config.logger;
             let lastDocument = null;
             const regenerate = async () => {
                 const started = performance.now();
                 try {
-                    const source = await fetchDocument(documentUrl);
+                    const source = await readDocument();
                     const changed = source !== lastDocument;
                     if (changed) {
                         await writeTypes(JSON.parse(source), typesPath, routesPath, logger);

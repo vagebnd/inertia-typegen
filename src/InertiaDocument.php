@@ -19,14 +19,15 @@ final class InertiaDocument
         public readonly string $name,
         public readonly array $routeNames = [],
         public readonly array $uriPrefixes = [],
+        public readonly bool $expose = false,
     ) {}
 
     /**
-     * @param  array{route_names?: list<string>, uri_prefixes?: array<string, string>}  $config
+     * @param  array{route_names?: list<string>, uri_prefixes?: array<string, string>, expose?: bool}  $config
      */
     public static function fromConfig(string $name, array $config): self
     {
-        return new self($name, $config['route_names'] ?? [], $config['uri_prefixes'] ?? []);
+        return new self($name, $config['route_names'] ?? [], $config['uri_prefixes'] ?? [], $config['expose'] ?? false);
     }
 
     public function includes(Route $route): bool

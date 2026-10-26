@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { createLogger, loadConfigFromFile } from 'vite';
+import { exportDocument, phpCommand } from "./export.js";
 const root = process.cwd();
 const { values } = parseArgs({
     options: {
@@ -26,26 +26,13 @@ for (const configFile of values.config ?? [undefined]) {
 if (apis.length === 0) {
     throw new Error('No Vite config has the inertia-typegen plugin. Pass the config file with --config.');
 }
-const php = values.php?.split(/\s+/) ?? (/\/herd\//i.test(process.env.PATH ?? '') ? ['herd', 'php'] : ['php']);
 const documents = new Map();
-function exportDocument(name) {
-    const cached = documents.get(name);
-    if (cached)
-        return cached;
-    const directory = mkdtempSync(join(tmpdir(), 'inertia-typegen-'));
-    const path = join(directory, `${name}.json`);
-    try {
-        execFileSync(php[0], [...php.slice(1), 'artisan', 'scramble:export', `--api=${name}`, `--path=${path}`], {
-            cwd: root,
-            stdio: ['ignore', 'ignore', 'inherit'],
-        });
-        const document = JSON.parse(readFileSync(path, 'utf-8'));
-        documents.set(name, document);
-        return document;
+async function documentFor(api) {
+    if (!documents.has(api.document)) {
+        const php = values.php ? phpCommand(values.php) : api.php;
+        documents.set(api.document, exportDocument(api.document, root, php).then((source) => JSON.parse(source)));
     }
-    finally {
-        rmSync(directory, { recursive: true, force: true });
-    }
+    return structuredClone(await documents.get(api.document));
 }
 function files(directory) {
     if (!directory || !existsSync(directory))
@@ -81,7 +68,7 @@ if (values.check) {
     for (const api of apis) {
         const outputDir = mkdtempSync(join(tmpdir(), 'inertia-typegen-'));
         try {
-            await api.generate(exportDocument(api.document), createLogger('silent'), outputDir);
+            await api.generate(await documentFor(api), createLogger('silent'), outputDir);
             problems.push(...compare(api, outputDir));
         }
         finally {
@@ -96,6 +83,6 @@ if (values.check) {
 else {
     const outDir = values['out-dir'] ? resolve(root, values['out-dir']) : undefined;
     for (const api of apis) {
-        await api.generate(exportDocument(api.document), createLogger('info', { prefix: '' }), outDir && apis.length > 1 ? join(outDir, api.document) : outDir);
+        await api.generate(await documentFor(api), createLogger('info', { prefix: '' }), outDir && apis.length > 1 ? join(outDir, api.document) : outDir);
     }
 }

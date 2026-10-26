@@ -16,6 +16,7 @@ export type TypegenOptions = {
     format?: Formatter;
     formatOptions?: Record<string, unknown>;
     documentUrl?: string;
+    php?: string | string[];
     watch?: string[];
     plugins?: TypegenPlugin[];
 };
@@ -23,6 +24,7 @@ export type TypegenApi = {
     document: string;
     typesPath: string;
     routesPath: string | undefined;
+    php: string[];
     generate(document: OpenAPI3, logger: Logger, outputDir?: string): Promise<void>;
 };
 export declare function typegen(options: TypegenOptions): Plugin<TypegenApi>;

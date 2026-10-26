@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { execFileSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { basename, join, relative, resolve } from 'node:path'
@@ -8,6 +7,7 @@ import { parseArgs } from 'node:util'
 import type { OpenAPI3 } from 'openapi-typescript'
 import { createLogger, loadConfigFromFile, type Plugin } from 'vite'
 
+import { exportDocument, phpCommand } from './export.ts'
 import type { TypegenApi } from './vite.ts'
 
 const root = process.cwd()
@@ -41,29 +41,19 @@ if (apis.length === 0) {
   throw new Error('No Vite config has the inertia-typegen plugin. Pass the config file with --config.')
 }
 
-const php = values.php?.split(/\s+/) ?? (/\/herd\//i.test(process.env.PATH ?? '') ? ['herd', 'php'] : ['php'])
-const documents = new Map<string, OpenAPI3>()
+const documents = new Map<string, Promise<OpenAPI3>>()
 
-function exportDocument(name: string): OpenAPI3 {
-  const cached = documents.get(name)
-  if (cached) return cached
+async function documentFor(api: TypegenApi): Promise<OpenAPI3> {
+  if (!documents.has(api.document)) {
+    const php = values.php ? phpCommand(values.php) : api.php
 
-  const directory = mkdtempSync(join(tmpdir(), 'inertia-typegen-'))
-  const path = join(directory, `${name}.json`)
-
-  try {
-    execFileSync(php[0], [...php.slice(1), 'artisan', 'scramble:export', `--api=${name}`, `--path=${path}`], {
-      cwd: root,
-      stdio: ['ignore', 'ignore', 'inherit'],
-    })
-
-    const document = JSON.parse(readFileSync(path, 'utf-8')) as OpenAPI3
-    documents.set(name, document)
-
-    return document
-  } finally {
-    rmSync(directory, { recursive: true, force: true })
+    documents.set(
+      api.document,
+      exportDocument(api.document, root, php).then((source) => JSON.parse(source) as OpenAPI3),
+    )
   }
+
+  return structuredClone(await documents.get(api.document)!)
 }
 
 function files(directory: string | undefined): Map<string, string> {
@@ -108,7 +98,7 @@ if (values.check) {
     const outputDir = mkdtempSync(join(tmpdir(), 'inertia-typegen-'))
 
     try {
-      await api.generate(exportDocument(api.document), createLogger('silent'), outputDir)
+      await api.generate(await documentFor(api), createLogger('silent'), outputDir)
       problems.push(...compare(api, outputDir))
     } finally {
       rmSync(outputDir, { recursive: true, force: true })
@@ -126,7 +116,7 @@ if (values.check) {
 
   for (const api of apis) {
     await api.generate(
-      exportDocument(api.document),
+      await documentFor(api),
       createLogger('info', { prefix: '' }),
       outDir && apis.length > 1 ? join(outDir, api.document) : outDir,
     )

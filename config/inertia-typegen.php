@@ -22,6 +22,7 @@ return [
         'app' => [
             'route_names' => [''],
             'uri_prefixes' => [],
+            'expose' => false,
         ],
     ],
 

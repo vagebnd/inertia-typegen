@@ -36,10 +36,13 @@ class InertiaTypegenServiceProvider extends PackageServiceProvider
         foreach (config('inertia-typegen.documents', []) as $name => $config) {
             $document = InertiaDocument::fromConfig($name, $config);
 
-            Scramble::registerApi($name)
+            $api = Scramble::registerApi($name)
                 ->routes($document->includes(...))
-                ->afterOpenApiGenerated($document->normalizeOperationIds(...))
-                ->expose(ui: "/docs/{$name}", document: "/docs/{$name}.json");
+                ->afterOpenApiGenerated($document->normalizeOperationIds(...));
+
+            if ($document->expose) {
+                $api->expose(ui: "/docs/{$name}", document: "/docs/{$name}.json");
+            }
         }
     }
 }

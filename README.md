@@ -63,13 +63,20 @@ return [
 ];
 ```
 
-- `documents`: each key becomes a Scramble API with a UI at `/docs/{key}` and a document at `/docs/{key}.json`.
+- `documents`: each key becomes a Scramble API. `php artisan scramble:export --api={key}` writes its OpenAPI document.
   - `route_names`: route-name prefixes to include. An empty string includes all routes.
   - `uri_prefixes`: URI prefixes to include, with the namespace segment for their operations. The example puts the Fortify routes under `auth/` into `Inertia.Pages.Auth`.
+  - `expose`: `true` adds a UI at `/docs/{key}` and the document at `/docs/{key}.json`. The default is `false`.
 - `enum_helpers`: a trait with `description()`, `toArray()`, `asSelectArray()` and `collect()` methods. `null` disables the extension.
 - `extensions`: the Scramble extensions of this package. They run before the extensions in `config/scramble.php`, so your own extensions can replace their schemas.
 
 Redirect routes are never in a document.
+
+### No endpoint by default
+
+A document lists every route, parameter and prop of your application. The package therefore adds no HTTP endpoint unless you set `expose` to `true`. An exposed document uses the middleware in `scramble.middleware`. Scramble's default, `RestrictedDocsAccess`, allows it only in the `local` environment or when the `viewApiDocs` gate allows it.
+
+Scramble itself serves its default API at `/docs/api`. Call `Scramble::ignoreDefaultRoutes()` in a service provider if you do not use that API.
 
 ### Shared data
 
@@ -114,11 +121,12 @@ export default defineConfig({
 | `namespace`     | `'Inertia'`                           | The name of the root namespace.                                                                    |
 | `format`        | `'auto'`                              | `'vite-plus'`, `'prettier'`, `false` or a function. `'auto'` uses the first one that is installed. |
 | `formatOptions` | `{}`                                  | Options for the formatter.                                                                         |
-| `documentUrl`   | `{VITE_APP_URL}/docs/{document}.json` | The URL that the dev server reads the document from.                                               |
+| `documentUrl`   | none                                  | Read the document over HTTP instead of with `php artisan scramble:export`. Needs `expose`.         |
+| `php`           | `herd php` or `php`                   | The PHP command for `scramble:export`.                                                             |
 | `watch`         | `['app']`                             | Folders with PHP files that cause a new generation when they change.                               |
 | `plugins`       | `[]`                                  | See [Plugins](#plugins).                                                                           |
 
-The dev server reads the document when it starts and again when a PHP file changes. It writes files only when their content changes.
+The dev server reads the document when it starts and again when a PHP file changes. By default it runs `php artisan scramble:export`, so no endpoint is necessary. An exposed document over HTTP is faster, because PHP-FPM keeps OPcache warm: about 0.8 s instead of 1.3 s in a large application. The dev server writes files only when their content changes.
 
 The generator copies the route runtime to `_runtime.ts` in the routes folder. Set `routes: { path, runtime: '@/lib/route' }` to import your own runtime instead.
 
@@ -133,7 +141,7 @@ The CLI exports each document with `php artisan scramble:export` and writes the 
 - `--config <file>`: the Vite config with the plugin. Repeat the option for more configs.
 - `--check`: compare the files with a fresh generation and exit with code 1 when they differ. Use it in CI or in a test.
 - `--out-dir <dir>`: write to this folder instead.
-- `--php <command>`: the PHP command. The default is `herd php` when Laravel Herd is in `PATH`, else `php`.
+- `--php <command>`: the PHP command. The default is the `php` option of the plugin, else `herd php` when Laravel Herd is in `PATH`, else `php`.
 
 Commit the generated files. A production build then needs no PHP.
 

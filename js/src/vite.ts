@@ -5,8 +5,8 @@ import { performance } from 'node:perf_hooks'
 
 import type { OpenAPI3 } from 'openapi-typescript'
 import type { Logger, Plugin } from 'vite'
-import { loadEnv } from 'vite'
 
+import { exportDocument, phpCommand } from './export.ts'
 import type { Formatter } from './format.ts'
 import { generate, type TypegenPlugin, type TypeImport, writeOutput } from './generate.ts'
 
@@ -22,6 +22,7 @@ export type TypegenOptions = {
   format?: Formatter
   formatOptions?: Record<string, unknown>
   documentUrl?: string
+  php?: string | string[]
   watch?: string[]
   plugins?: TypegenPlugin[]
 }
@@ -30,6 +31,7 @@ export type TypegenApi = {
   document: string
   typesPath: string
   routesPath: string | undefined
+  php: string[]
   generate(document: OpenAPI3, logger: Logger, outputDir?: string): Promise<void>
 }
 
@@ -40,6 +42,7 @@ export function typegen(options: TypegenOptions): Plugin<TypegenApi> {
   const routes = typeof options.routes === 'string' ? { path: options.routes } : options.routes
   const routesPath = routes ? resolve(root, routes.path) : undefined
   const fileName = basename(typesPath)
+  const php = phpCommand(options.php)
 
   const writeTypes = async (source: OpenAPI3, outputPath: string, routesDir: string | undefined, logger: Logger) => {
     const output = await generate(source, {
@@ -73,6 +76,7 @@ export function typegen(options: TypegenOptions): Plugin<TypegenApi> {
       document,
       typesPath,
       routesPath,
+      php,
       generate(source, logger, outputDir) {
         return writeTypes(
           source,
@@ -83,10 +87,8 @@ export function typegen(options: TypegenOptions): Plugin<TypegenApi> {
       },
     },
     async configureServer(server) {
-      const env = loadEnv(server.config.mode, root)
-      const documentUrl = options.documentUrl ?? (env.VITE_APP_URL && `${env.VITE_APP_URL}/docs/${document}.json`)
-      if (!documentUrl) return
-
+      const { documentUrl } = options
+      const readDocument = () => (documentUrl ? fetchDocument(documentUrl) : exportDocument(document, root, php))
       const logger = server.config.logger
       let lastDocument: string | null = null
 
@@ -94,7 +96,7 @@ export function typegen(options: TypegenOptions): Plugin<TypegenApi> {
         const started = performance.now()
 
         try {
-          const source = await fetchDocument(documentUrl)
+          const source = await readDocument()
           const changed = source !== lastDocument
 
           if (changed) {
