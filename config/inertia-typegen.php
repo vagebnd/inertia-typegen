@@ -14,6 +14,7 @@ use Vagebond\InertiaTypegen\Extensions\InertiaResponseTypeToSchema;
 use Vagebond\InertiaTypegen\Extensions\InertiaSharedDataExtension;
 use Vagebond\InertiaTypegen\Extensions\ReflectionMethodReturnTypeExtension;
 use Vagebond\InertiaTypegen\Extensions\RouteMetadataExtension;
+use Vagebond\InertiaTypegen\Extensions\SqidsTypeInfer;
 use Vagebond\InertiaTypegen\Extensions\TableTypeInfer;
 use Vagebond\InertiaTypegen\Extensions\ValueOfEnumExtension;
 
@@ -42,6 +43,7 @@ return [
         ReflectionMethodReturnTypeExtension::class,
         InertiaSharedDataExtension::class,
         TableTypeInfer::class,
+        SqidsTypeInfer::class,
         RouteMetadataExtension::class,
     ],
 ];

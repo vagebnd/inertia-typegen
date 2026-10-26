@@ -36,6 +36,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
+        "red-explosion/laravel-sqids": "^2.1",
         "symfony/yaml": "^7.0||^8.0"
     },
     "conflict": {

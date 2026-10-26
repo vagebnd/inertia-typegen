@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
 it('exports the shared data of a middleware with the attribute as one component schema', function () {
     $document = $this->document();
 
@@ -73,4 +76,10 @@ it('documents paginated resource collections and paginators mapped with through 
 it('documents an eloquent collection prop', function () {
     expect(data_get($this->document(), 'paths./posts.get.responses.200.content.application/json.schema.allOf.1.properties.posts.type'))
         ->toBe('array');
+});
+
+it('documents the sqid of a model with laravel-sqids as a string', function () {
+    Schema::create('comments', fn(Blueprint $table) => $table->id());
+
+    expect(data_get($this->document(), 'components.schemas.CommentResource.properties.id'))->toBe(['type' => 'string']);
 });

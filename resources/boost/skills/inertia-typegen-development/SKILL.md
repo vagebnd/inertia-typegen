@@ -158,7 +158,7 @@ class ChartTypeInfer extends SharedComponentTypeInfer
 }
 ```
 
-`InertiaUI\Table\Table` already maps to `TableResource`.
+`InertiaUI\Table\Table` already maps to `TableResource`, and `SqidsTypeInfer` types the laravel-sqids `sqid` attribute as `string`.
 
 ## Writing Scramble extensions
 

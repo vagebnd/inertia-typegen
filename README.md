@@ -206,6 +206,11 @@ class ChartTypeInfer extends SharedComponentTypeInfer
 
 Then map `ChartResource` to your component's type with `typeImports`.
 
+The package already includes two bridges. They do nothing when their package is not installed:
+
+- `TableTypeInfer` maps `InertiaUI\Table\Table` (inertiaui/table) to `TableResource`.
+- `SqidsTypeInfer` types the `sqid` attribute of red-explosion/laravel-sqids as `string`. The accessor returns `?string`, because an unsaved model has no key.
+
 ### Plugins
 
 A plugin is an object with a name and one or more hooks:
