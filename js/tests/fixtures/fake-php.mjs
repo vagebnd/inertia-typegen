@@ -9,4 +9,9 @@ if (args[0] !== 'artisan' || args[1] !== 'scramble:export' || api === 'broken') 
   process.exit(1)
 }
 
+if (api === 'crashing') {
+  process.stdout.write('\x1b[41;1m ItemNotFoundException \x1b[49;22m\n')
+  process.exit(1)
+}
+
 writeFileSync(path, JSON.stringify({ openapi: '3.1.0', info: { title: api } }))

@@ -19,8 +19,10 @@ export async function exportDocument(name, cwd, php) {
         return await readFile(path, 'utf-8');
     }
     catch (error) {
-        const { stderr, message } = error;
-        throw new Error(`php artisan scramble:export --api=${name} failed: ${stderr?.trim() || message}`);
+        const { stderr, stdout, message } = error;
+        const clean = (text) => text?.replace(/\x1b\[[0-9;]*m/g, '').trim();
+        const output = clean(stderr) || clean(stdout) || message;
+        throw new Error(`php artisan scramble:export --api=${name} failed: ${output}`);
     }
     finally {
         await rm(directory, { recursive: true, force: true });

@@ -69,3 +69,8 @@ it('documents paginated resource collections and paginators mapped with through 
         ->and($props['pages']['properties']['data']['items'])->toBe(['$ref' => '#/components/schemas/PostResource'])
         ->and($props['names']['properties']['data']['items']['properties'])->toBe(['name' => ['type' => 'string']]);
 });
+
+it('documents an eloquent collection prop', function () {
+    expect(data_get($this->document(), 'paths./posts.get.responses.200.content.application/json.schema.allOf.1.properties.posts.type'))
+        ->toBe('array');
+});

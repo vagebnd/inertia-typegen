@@ -39,4 +39,8 @@ describe('exportDocument', () => {
       /scramble:export --api=broken failed: API \[broken\] is not registered\./,
     )
   })
+
+  it('reports the standard output when the error output is empty', async () => {
+    await assert.rejects(exportDocument('crashing', process.cwd(), fakePhp), /failed: ItemNotFoundException$/)
+  })
 })

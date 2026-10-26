@@ -38,7 +38,7 @@ class ArrayableExtension extends TypeToSchemaExtension
             return;
         }
 
-        $classDefinition = $this->infer->analyzeClass($type->name);
+        $classDefinition = $this->infer->index->getClass($type->name);
 
         $toArrayReturnType = $type->getMethodReturnType('toArray');
 
@@ -70,9 +70,9 @@ class ArrayableExtension extends TypeToSchemaExtension
         return $this->openApiTransformer->transform($toArrayReturnType);
     }
 
-    private function getDeclaredReturnType(ClassDefinition $classDefinition): ?Type
+    private function getDeclaredReturnType(?ClassDefinition $classDefinition): ?Type
     {
-        $methodDef = $classDefinition->getMethodDefinition('toArray');
+        $methodDef = $classDefinition?->getMethodDefinition('toArray');
 
         if (! $methodDef instanceof FunctionLikeAstDefinition) {
             return null;

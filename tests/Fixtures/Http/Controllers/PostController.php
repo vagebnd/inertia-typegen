@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vagebond\InertiaTypegen\Tests\Fixtures\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,6 +25,7 @@ class PostController
             'title' => 'Posts',
             'status' => Status::toArray(),
             'draft' => Status::Draft->description(),
+            'posts' => new Collection([new Post()]),
             'widget' => new Widget(),
             'stats' => Inertia::defer(fn() => ['total' => 1]),
         ]);
