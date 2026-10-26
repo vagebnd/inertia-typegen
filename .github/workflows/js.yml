@@ -1,6 +1,7 @@
 name: js
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'js/**'
