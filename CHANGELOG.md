@@ -2,6 +2,14 @@
 
 All notable changes to `inertia-typegen` will be documented in this file.
 
+## v0.1.2 - 2026-10-26
+
+### Changes
+
+- `SqidsTypeInfer` types the `sqid` attribute as `string` for models with the red-explosion/laravel-sqids `HasSqids` trait.
+- Scramble 0.13.49 reads the laravel-sqids accessor, which returns `?string`. Without the extension, each resource that exposes the sqid gets a nullable id.
+- The extension does nothing when laravel-sqids is not installed.
+
 ## v0.1.1 - 2026-10-26
 
 ### What's changed
