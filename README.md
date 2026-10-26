@@ -7,6 +7,8 @@
 
 Generate TypeScript types and route helpers for Inertia pages from Scramble's OpenAPI document.
 
+> **Status:** 0.x. A minor release (0.2, 0.3) can contain breaking changes until 1.0. `composer require vagebond/inertia-typegen` writes `^0.1`, which allows only 0.1.x.
+
 ```
 Laravel routes and controllers
   └─> Scramble with the extensions of this package   → OpenAPI document at /docs/{document}.json
