@@ -23,8 +23,16 @@ class PostController
         return Inertia::render('posts/index', [
             'title' => 'Posts',
             'status' => Status::toArray(),
+            'draft' => Status::Draft->description(),
             'widget' => new Widget(),
             'stats' => Inertia::defer(fn() => ['total' => 1]),
+        ]);
+    }
+
+    public function status(Status $status): Response
+    {
+        return Inertia::render('posts/status', [
+            'label' => $status->description(),
         ]);
     }
 

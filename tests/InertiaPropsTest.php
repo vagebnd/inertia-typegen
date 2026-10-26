@@ -26,12 +26,17 @@ it('documents the page props and marks deferred props optional', function () {
 });
 
 it('infers enum helper methods from the configured trait', function () {
-    expect(data_get($this->document(), 'paths./posts.get.responses.200.content.application/json.schema.allOf.1.properties.status'))
-        ->toBe([
-            'type' => 'object',
-            'properties' => ['value' => ['type' => 'string'], 'label' => ['type' => 'string']],
-            'required' => ['value', 'label'],
-        ]);
+    $document = $this->document();
+    $index = data_get($document, 'paths./posts.get.responses.200.content.application/json.schema.allOf.1.properties');
+
+    expect($index['status'])->toBe([
+        'type' => 'object',
+        'properties' => ['value' => ['type' => 'string'], 'label' => ['type' => 'string']],
+        'required' => ['value', 'label'],
+    ])
+        ->and($index['draft'])->toBe(['type' => 'string'])
+        ->and(data_get($document, 'paths./posts/status/{status}.get.responses.200.content.application/json.schema.allOf.1.properties.label'))
+        ->toBe(['type' => 'string']);
 });
 
 it('documents a shared component prop as a reference to its own schema', function () {

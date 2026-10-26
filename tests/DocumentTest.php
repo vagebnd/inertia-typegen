@@ -7,6 +7,7 @@ it('documents the routes named after the document and the routes under a uri pre
         '/posts',
         '/posts/{post}',
         '/posts/paginated',
+        '/posts/status/{status}',
         '/auth/login',
         '/auth/register',
         '/plain',
@@ -27,6 +28,7 @@ it('prefixes the operation ids of routes under a uri prefix with the document an
         'app.posts.index',
         'app.posts.paginated',
         'app.posts.show',
+        'app.posts.status',
         'app.posts.store',
     ]);
 });

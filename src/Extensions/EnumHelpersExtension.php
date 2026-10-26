@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Vagebond\InertiaTypegen\Extensions;
 
-use Dedoc\Scramble\Infer\Extensions\ExpressionTypeInferExtension;
-use Dedoc\Scramble\Infer\Scope\Scope;
+use Dedoc\Scramble\Infer\Extensions\Event\MethodCallEvent;
+use Dedoc\Scramble\Infer\Extensions\Event\StaticMethodCallEvent;
+use Dedoc\Scramble\Infer\Extensions\MethodReturnTypeExtension;
+use Dedoc\Scramble\Infer\Extensions\StaticMethodReturnTypeExtension;
 use Dedoc\Scramble\Support\Type\ArrayItemType_;
 use Dedoc\Scramble\Support\Type\Generic;
 use Dedoc\Scramble\Support\Type\KeyedArrayType;
@@ -14,9 +16,6 @@ use Dedoc\Scramble\Support\Type\StringType;
 use Dedoc\Scramble\Support\Type\Type;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Collection;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 
 /**
  * Helps Scramble infer return types for methods provided by the trait in the
@@ -25,7 +24,7 @@ use PhpParser\Node\Name;
  * Without this extension, Scramble cannot resolve `description()`, `toArray()`,
  * `asSelectArray()`, or `collect()` on enums that use the trait.
  */
-class EnumHelpersExtension implements ExpressionTypeInferExtension
+class EnumHelpersExtension implements MethodReturnTypeExtension, StaticMethodReturnTypeExtension
 {
     /**
      * @param  class-string|null  $trait
@@ -35,36 +34,31 @@ class EnumHelpersExtension implements ExpressionTypeInferExtension
         private readonly ?string $trait = null,
     ) {}
 
-    public function getType(Expr $node, Scope $scope): ?Type
+    public function shouldHandle(ObjectType|string $type): bool
     {
-        if (! $node instanceof Expr\MethodCall && ! $node instanceof Expr\StaticCall) {
-            return null;
-        }
+        return $this->usesEnumHelpers($type instanceof ObjectType ? $type->name : $type);
+    }
 
-        if (! $node->name instanceof Identifier) {
-            return null;
-        }
+    public function getMethodReturnType(MethodCallEvent $event): ?Type
+    {
+        return $this->returnType($event->name, $event->getInstance()->name);
+    }
 
-        $callerType = $node instanceof Expr\StaticCall
-            ? ($node->class instanceof Name ? new ObjectType($node->class->toString()) : null)
-            : $scope->getType($node->var);
+    public function getStaticMethodReturnType(StaticMethodCallEvent $event): ?Type
+    {
+        return $this->returnType($event->name, $event->callee);
+    }
 
-        if (! $callerType instanceof ObjectType) {
-            return null;
-        }
-
-        if (! $this->usesEnumHelpers($callerType->name)) {
-            return null;
-        }
-
-        return match ($node->name->toString()) {
+    private function returnType(string $method, string $className): ?Type
+    {
+        return match ($method) {
             'description' => new StringType(),
             'toArray' => new KeyedArrayType([
                 new ArrayItemType_('value', new StringType()),
                 new ArrayItemType_('label', new StringType()),
             ]),
             'asSelectArray' => new KeyedArrayType([]),
-            'collect' => new Generic(Collection::class, [new ObjectType($callerType->name)]),
+            'collect' => new Generic(Collection::class, [new ObjectType($className)]),
             default => null,
         };
     }
