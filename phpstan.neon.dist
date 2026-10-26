@@ -12,3 +12,6 @@ parameters:
         -
             identifier: class.notFound
             path: src/Extensions/TableTypeInfer.php
+        -
+            identifier: class.notFound
+            path: src/Extensions/InertiaExtension.php

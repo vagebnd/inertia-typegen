@@ -17,7 +17,6 @@ use Dedoc\Scramble\Support\Type\FunctionType;
 use Dedoc\Scramble\Support\Type\Generic;
 use Dedoc\Scramble\Support\Type\KeyedArrayType;
 use Dedoc\Scramble\Support\Type\Type;
-use Illuminate\Http\Response as IlluminateResponse;
 use Illuminate\Support\Facades\Route as RouteFacade;
 use Inertia\Middleware as InertiaMiddleware;
 use ReflectionClass;
@@ -193,7 +192,7 @@ class InertiaSharedDataExtension extends OperationExtension
 
     /**
      * Whether the controller method's inferred return type is the Generic
-     * Response shape produced by InertiaExtension when it sees Inertia::render().
+     * response shape produced by InertiaExtension for Inertia::render() or Inertia::modal().
      */
     private function returnsInertiaRender(RouteInfo $routeInfo): bool
     {
@@ -210,7 +209,7 @@ class InertiaSharedDataExtension extends OperationExtension
             return false;
         }
 
-        return $returnType->name === IlluminateResponse::class;
+        return in_array($returnType->name, InertiaExtension::RESPONSE_CLASSES, true);
     }
 
     /**

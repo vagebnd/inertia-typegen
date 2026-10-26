@@ -61,6 +61,7 @@ class TestCase extends Orchestra
     {
         $router->middleware(HandleInertiaRequests::class)->group(function (Router $router) {
             $router->get('posts', [PostController::class, 'index'])->name('app.posts.index');
+            $router->get('posts/paginated', [PostController::class, 'paginated'])->name('app.posts.paginated');
             $router->get('posts/{post}', [PostController::class, 'show'])->name('app.posts.show');
             $router->post('posts', [PostController::class, 'store'])->name('app.posts.store');
             $router->get('auth/login', [AuthController::class, 'login'])->name('login');

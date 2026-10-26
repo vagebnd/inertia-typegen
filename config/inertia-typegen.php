@@ -10,6 +10,7 @@ use Vagebond\InertiaTypegen\Extensions\CollectionMethodExtension;
 use Vagebond\InertiaTypegen\Extensions\CommonStaticMethodExtension;
 use Vagebond\InertiaTypegen\Extensions\EnumHelpersExtension;
 use Vagebond\InertiaTypegen\Extensions\InertiaExtension;
+use Vagebond\InertiaTypegen\Extensions\InertiaResponseTypeToSchema;
 use Vagebond\InertiaTypegen\Extensions\InertiaSharedDataExtension;
 use Vagebond\InertiaTypegen\Extensions\ReflectionMethodReturnTypeExtension;
 use Vagebond\InertiaTypegen\Extensions\RouteMetadataExtension;
@@ -29,6 +30,7 @@ return [
     'extensions' => [
         CastablePropertyExtension::class,
         InertiaExtension::class,
+        InertiaResponseTypeToSchema::class,
         CallbackExtension::class,
         ArrayableExtension::class,
         EnumHelpersExtension::class,

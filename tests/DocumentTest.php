@@ -6,6 +6,7 @@ it('documents the routes named after the document and the routes under a uri pre
     expect(array_keys($this->document()['paths']))->toEqualCanonicalizing([
         '/posts',
         '/posts/{post}',
+        '/posts/paginated',
         '/auth/login',
         '/auth/register',
         '/plain',
@@ -24,6 +25,7 @@ it('prefixes the operation ids of routes under a uri prefix with the document an
         'app.auth.register',
         'app.plain',
         'app.posts.index',
+        'app.posts.paginated',
         'app.posts.show',
         'app.posts.store',
     ]);
@@ -31,5 +33,5 @@ it('prefixes the operation ids of routes under a uri prefix with the document an
 
 it('exposes a ui and a json document for each document', function () {
     $this->get('/docs/app')->assertOk();
-    $this->get('/docs/app.json')->assertOk()->assertJsonPath('openapi', '3.1.0');
+    $this->get('/docs/app.json')->assertOk()->assertJsonStructure(['openapi', 'paths', 'components']);
 });

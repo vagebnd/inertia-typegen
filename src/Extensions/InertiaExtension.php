@@ -5,27 +5,30 @@ declare(strict_types=1);
 namespace Vagebond\InertiaTypegen\Extensions;
 
 use Dedoc\Scramble\Infer\Extensions\ExpressionTypeInferExtension;
+use Dedoc\Scramble\Infer\Scope\GlobalScope;
 use Dedoc\Scramble\Infer\Scope\Scope;
 use Dedoc\Scramble\Infer\Services\ReferenceTypeResolver;
 use Dedoc\Scramble\Support\Type\ArrayItemType_;
 use Dedoc\Scramble\Support\Type\ArrayType;
 use Dedoc\Scramble\Support\Type\FunctionType;
 use Dedoc\Scramble\Support\Type\Generic;
+use Dedoc\Scramble\Support\Type\IntegerType;
 use Dedoc\Scramble\Support\Type\KeyedArrayType;
 use Dedoc\Scramble\Support\Type\Literal\LiteralIntegerType;
 use Dedoc\Scramble\Support\Type\ObjectType;
+use Dedoc\Scramble\Support\Type\Reference\MethodCallReferenceType;
 use Dedoc\Scramble\Support\Type\Type;
 use Dedoc\Scramble\Support\Type\TypeHelper;
-use Dedoc\Scramble\Support\TypeManagers\CursorPaginatorTypeManager;
-use Dedoc\Scramble\Support\TypeManagers\LengthAwarePaginatorTypeManager;
-use Dedoc\Scramble\Support\TypeManagers\PaginatorTypeManager;
 use Dedoc\Scramble\Support\TypeManagers\ResourceCollectionTypeManager;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\AbstractCursorPaginator;
 use Illuminate\Pagination\AbstractPaginator;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
+use InertiaUI\Modal\Modal;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
@@ -39,6 +42,15 @@ use PhpParser\Node\VariadicPlaceholder;
 
 class InertiaExtension implements ExpressionTypeInferExtension
 {
+    /**
+     * The class that each Inertia factory method returns. The inferred type must be this class,
+     * or Scramble prefers the declared return type of the controller method and loses the props.
+     */
+    public const RESPONSE_CLASSES = [
+        'render' => InertiaResponse::class,
+        'modal' => Modal::class,
+    ];
+
     public function getType(Expr $node, Scope $scope): ?Type
     {
         if ($node instanceof StaticCall && $node->class instanceof FullyQualified && $node->class->toString() === Inertia::class) {
@@ -87,18 +99,33 @@ class InertiaExtension implements ExpressionTypeInferExtension
             return null;
         }
 
-        $dataType = new ArrayType($callbackType->getReturnType());
+        return $this->paginatorToArrayType(match (true) {
+            $paginatorType->isInstanceOf(AbstractCursorPaginator::class) => CursorPaginator::class,
+            $paginatorType->isInstanceOf(LengthAwarePaginator::class) => LengthAwarePaginator::class,
+            default => Paginator::class,
+        }, $callbackType->getReturnType());
+    }
 
-        return match (true) {
-            $paginatorType->isInstanceOf(AbstractCursorPaginator::class) => (new CursorPaginatorTypeManager())->getToArrayType($dataType),
-            $paginatorType->isInstanceOf(LengthAwarePaginator::class) => (new LengthAwarePaginatorTypeManager())->getToArrayType($dataType),
-            default => (new PaginatorTypeManager())->getToArrayType($dataType),
-        };
+    /**
+     * Resolve the `toArray()` shape that Scramble gives the paginator class for this item type.
+     *
+     * @param  class-string  $paginatorClass
+     */
+    private function paginatorToArrayType(string $paginatorClass, Type $itemType): ?KeyedArrayType
+    {
+        $type = ReferenceTypeResolver::getInstance()->resolve(
+            new GlobalScope(),
+            new MethodCallReferenceType(new Generic($paginatorClass, [new IntegerType(), $itemType]), 'toArray', []),
+        );
+
+        return $type instanceof KeyedArrayType ? $type : null;
     }
 
     private function handleInertiaStaticCall(StaticCall $node, Scope $scope): ?Type
     {
-        if (in_array($node->name->toString(), ['render', 'modal']) && count($node->args) > 1) {
+        $responseClass = self::RESPONSE_CLASSES[$node->name->toString()] ?? null;
+
+        if ($responseClass !== null && count($node->args) > 1) {
             $propsType = TypeHelper::getArgType($scope, $node->args, ['content', 1], new ArrayType());
 
             // Resolve references in all props (method calls, static calls, etc.)
@@ -111,10 +138,7 @@ class InertiaExtension implements ExpressionTypeInferExtension
             // so mark them optional to keep the generated prop types non-required.
             $propsType = $this->markDeferredPropsOptional($propsType, $node->args);
 
-            return new Generic(
-                Response::class,
-                [$propsType, new LiteralIntegerType(200)],
-            );
+            return new Generic($responseClass, [$propsType, new LiteralIntegerType(200)]);
         }
 
         if (in_array($node->name->toString(), ['lazy', 'defer', 'optional', 'scroll']) && count($node->args) > 0) {
@@ -176,14 +200,12 @@ class InertiaExtension implements ExpressionTypeInferExtension
 
         $normalizedType = $type instanceof Generic ? $type : new Generic($type->name);
         $manager = ResourceCollectionTypeManager::make($normalizedType);
-        $collectedType = $manager->getCollectedType();
-        $dataType = new ArrayType($collectedType);
 
-        return match ($paginatorType) {
-            'cursor' => (new CursorPaginatorTypeManager())->getToArrayType($dataType),
-            'length_aware' => (new LengthAwarePaginatorTypeManager())->getToArrayType($dataType),
-            'simple' => (new PaginatorTypeManager())->getToArrayType($dataType),
-        };
+        return $this->paginatorToArrayType(match ($paginatorType) {
+            'cursor' => CursorPaginator::class,
+            'length_aware' => LengthAwarePaginator::class,
+            'simple' => Paginator::class,
+        }, $manager->getCollectedType());
     }
 
     /**

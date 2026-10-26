@@ -53,3 +53,14 @@ it('documents the form request of a route as its request body', function () {
     expect($schema['properties'])->toHaveKeys(['title', 'published'])
         ->and($schema['required'])->toBe(['title']);
 });
+
+it('documents paginated resource collections and paginators mapped with through as their array shape', function () {
+    $props = data_get($this->document(), 'paths./posts/paginated.get.responses.200.content.application/json.schema.allOf.1.properties');
+
+    expect(array_keys($props['pages']['properties']))->toContain('current_page', 'data', 'last_page', 'total', 'links')
+        ->and(array_keys($props['simple']['properties']))->toContain('current_page', 'data', 'next_page_url')
+        ->and(array_keys($props['simple']['properties']))->not->toContain('total')
+        ->and(array_keys($props['cursor']['properties']))->toContain('data', 'next_cursor', 'prev_cursor')
+        ->and($props['pages']['properties']['data']['items'])->toBe(['$ref' => '#/components/schemas/PostResource'])
+        ->and($props['names']['properties']['data']['items']['properties'])->toBe(['name' => ['type' => 'string']]);
+});
