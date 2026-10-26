@@ -56,6 +56,10 @@ jobs:
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Remove laravel-sqids, which requires PHP 8.4
+        if: matrix.php == '8.3'
+        run: composer remove red-explosion/laravel-sqids --dev --no-update --no-interaction
+
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update

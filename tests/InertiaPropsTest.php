@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
+use RedExplosion\Sqids\Concerns\HasSqids;
+use Vagebond\InertiaTypegen\Tests\Fixtures\Http\Controllers\CommentController;
 
 it('exports the shared data of a middleware with the attribute as one component schema', function () {
     $document = $this->document();
@@ -80,6 +83,7 @@ it('documents an eloquent collection prop', function () {
 
 it('documents the sqid of a model with laravel-sqids as a string', function () {
     Schema::create('comments', fn(Blueprint $table) => $table->id());
+    Route::get('comments', CommentController::class)->name('app.comments.show');
 
     expect(data_get($this->document(), 'components.schemas.CommentResource.properties.id'))->toBe(['type' => 'string']);
-});
+})->skip(! trait_exists(HasSqids::class), 'laravel-sqids requires PHP 8.4');

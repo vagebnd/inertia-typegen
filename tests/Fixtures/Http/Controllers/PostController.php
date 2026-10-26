@@ -13,9 +13,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Enums\Status;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Http\Requests\StorePostRequest;
-use Vagebond\InertiaTypegen\Tests\Fixtures\Http\Resources\CommentResource;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Http\Resources\PostResource;
-use Vagebond\InertiaTypegen\Tests\Fixtures\Models\Comment;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Models\Post;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Support\Widget;
 
@@ -66,7 +64,6 @@ class PostController
     {
         return Inertia::render('posts/plain', [
             'count' => 1,
-            'comment' => new CommentResource(new Comment()),
         ]);
     }
 }
