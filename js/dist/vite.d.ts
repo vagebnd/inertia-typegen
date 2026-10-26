@@ -18,13 +18,14 @@ export type TypegenOptions = {
     documentUrl?: string;
     php?: string | string[];
     watch?: string[];
+    debounce?: number;
     plugins?: TypegenPlugin[];
 };
 export type TypegenApi = {
     document: string;
     typesPath: string;
     routesPath: string | undefined;
-    php: string[];
+    php: string | string[] | undefined;
     generate(document: OpenAPI3, logger: Logger, outputDir?: string): Promise<void>;
 };
 export declare function typegen(options: TypegenOptions): Plugin<TypegenApi>;

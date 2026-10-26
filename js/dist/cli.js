@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { basename, join, relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { createLogger, loadConfigFromFile } from 'vite';
-import { exportDocument, phpCommand } from "./export.js";
+import { exportDocument, resolvePhpCommand } from "./export.js";
 const root = process.cwd();
 const { values } = parseArgs({
     options: {
@@ -29,8 +29,9 @@ if (apis.length === 0) {
 const documents = new Map();
 async function documentFor(api) {
     if (!documents.has(api.document)) {
-        const php = values.php ? phpCommand(values.php) : api.php;
-        documents.set(api.document, exportDocument(api.document, root, php).then((source) => JSON.parse(source)));
+        documents.set(api.document, resolvePhpCommand(values.php ?? api.php, root)
+            .then((php) => exportDocument(api.document, root, php))
+            .then((source) => JSON.parse(source)));
     }
     return structuredClone(await documents.get(api.document));
 }

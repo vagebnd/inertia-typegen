@@ -132,11 +132,12 @@ export default defineConfig({
 | `format`        | `'auto'`                              | `'vite-plus'`, `'prettier'`, `false` or a function. `'auto'` uses the first one that is installed. |
 | `formatOptions` | `{}`                                  | Options for the formatter.                                                                         |
 | `documentUrl`   | none                                  | Read the document over HTTP instead of with `php artisan scramble:export`. Needs `expose`.         |
-| `php`           | `herd php` or `php`                   | The PHP command for `scramble:export`.                                                             |
+| `php`           | Herd's PHP binary or `php`            | The PHP command for `scramble:export`. With Laravel Herd, the plugin asks `herd which-php` once.   |
 | `watch`         | `['app']`                             | Folders with PHP files that cause a new generation when they change.                               |
+| `debounce`      | `300`                                 | Milliseconds to wait after a PHP change before the next generation.                                |
 | `plugins`       | `[]`                                  | See [Plugins](#plugins).                                                                           |
 
-The dev server reads the document when it starts and again when a PHP file changes. By default it runs `php artisan scramble:export`, so no endpoint is necessary. An exposed document over HTTP is faster, because PHP-FPM keeps OPcache warm: about 0.8 s instead of 1.3 s in a large application. The dev server writes files only when their content changes.
+The dev server reads the document when it starts and again when a PHP file changes. By default it runs `php artisan scramble:export`, so no endpoint is necessary. An exposed document over HTTP is a little faster, because PHP-FPM keeps OPcache warm. The dev server writes files only when their content changes.
 
 The generator copies the route runtime to `_runtime.ts` in the routes folder. Set `routes: { path, runtime: '@/lib/route' }` to import your own runtime instead.
 
@@ -151,7 +152,7 @@ The CLI exports each document with `php artisan scramble:export` and writes the 
 - `--config <file>`: the Vite config with the plugin. Repeat the option for more configs.
 - `--check`: compare the files with a fresh generation and exit with code 1 when they differ. Use it in CI or in a test.
 - `--out-dir <dir>`: write to this folder instead.
-- `--php <command>`: the PHP command. The default is the `php` option of the plugin, else `herd php` when Laravel Herd is in `PATH`, else `php`.
+- `--php <command>`: the PHP command. The default is the `php` option of the plugin, else Herd's PHP binary when Laravel Herd is in `PATH`, else `php`.
 
 Commit the generated files. A production build then needs no PHP.
 

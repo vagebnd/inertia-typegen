@@ -7,7 +7,7 @@ import { parseArgs } from 'node:util'
 import type { OpenAPI3 } from 'openapi-typescript'
 import { createLogger, loadConfigFromFile, type Plugin } from 'vite'
 
-import { exportDocument, phpCommand } from './export.ts'
+import { exportDocument, resolvePhpCommand } from './export.ts'
 import type { TypegenApi } from './vite.ts'
 
 const root = process.cwd()
@@ -45,11 +45,11 @@ const documents = new Map<string, Promise<OpenAPI3>>()
 
 async function documentFor(api: TypegenApi): Promise<OpenAPI3> {
   if (!documents.has(api.document)) {
-    const php = values.php ? phpCommand(values.php) : api.php
-
     documents.set(
       api.document,
-      exportDocument(api.document, root, php).then((source) => JSON.parse(source) as OpenAPI3),
+      resolvePhpCommand(values.php ?? api.php, root)
+        .then((php) => exportDocument(api.document, root, php))
+        .then((source) => JSON.parse(source) as OpenAPI3),
     )
   }
 

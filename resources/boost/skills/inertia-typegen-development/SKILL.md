@@ -26,10 +26,10 @@ Laravel routes, controllers, form requests, Inertia middleware
 
 ## Generating
 
-- The Vite dev server generates the files when it starts and again after a PHP change in the watched folders (default `app/`).
+- The Vite dev server generates the files when it starts and again 300 ms after a PHP change in the watched folders (default `app/`).
 - Without a dev server, run the CLI: `inertia-typegen --config <vite config with the plugin>`.
 - `inertia-typegen --config <file> --check` exits with code 1 and lists the changed, missing and extra files when the committed files are stale. Use it in CI or in a test.
-- `--out-dir <dir>` writes to another folder. `--php "<command>"` sets the PHP command (default `herd php` when Laravel Herd is in `PATH`, else `php`).
+- `--out-dir <dir>` writes to another folder. `--php "<command>"` sets the PHP command (default: the binary from `herd which-php` when Laravel Herd is in `PATH`, else `php`).
 
 ## Using the types
 
@@ -116,7 +116,7 @@ typegen({
   types: 'resources/js/types/inertia.d.ts',
   routes: 'resources/js/routes',            // or { path, runtime: '@/lib/route' }
   typeImports: { TableResource: { type: 'TableResource', from: '@/components/table' } },
-  // namespace, format, formatOptions, documentUrl, php, watch, plugins
+  // namespace, format, formatOptions, documentUrl, php, watch, debounce (ms, default 300), plugins
 })
 ```
 
