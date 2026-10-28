@@ -2,6 +2,10 @@
 
 All notable changes to `inertia-typegen` will be documented in this file.
 
+## v0.1.3 - 2026-10-28
+
+A page prop that replaces a shared prop with the same name renders Omit<Inertia.Shared.X, name> & { ... } instead of an intersection. DeclaredArrayShapeExtension uses the array shape of a @return docblock when the inferred return type misses one of its keys, and keeps the inferred type when it has every key.
+
 ## v0.1.2 - 2026-10-26
 
 ### Changes
