@@ -40,6 +40,17 @@ describe('types', () => {
     assert.match(types.content, /title: string/)
   })
 
+  it('omits a shared key that the page defines too', async () => {
+    const source = document()
+    const dashboard = source.paths!['/dashboard'] as unknown as { get: { responses: { 200: { content: { 'application/json': { schema: { allOf: [unknown, { properties: Record<string, unknown> }] } } } } } } }
+    dashboard.get.responses[200].content['application/json'].schema.allOf[1].properties.appName = { type: 'integer' }
+
+    const { types } = await generate(source, options())
+
+    assert.match(types.content, /export type Dashboard = Omit<Inertia\.Shared\.App, 'appName'> & \{/)
+    assert.match(types.content, /appName\?: number/)
+  })
+
   it('renders an empty page as an empty object', async () => {
     const { types } = await generate(document(), options())
 

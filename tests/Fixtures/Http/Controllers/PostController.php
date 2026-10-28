@@ -15,6 +15,7 @@ use Vagebond\InertiaTypegen\Tests\Fixtures\Enums\Status;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Http\Requests\StorePostRequest;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Http\Resources\PostResource;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Models\Post;
+use Vagebond\InertiaTypegen\Tests\Fixtures\Support\Grid;
 use Vagebond\InertiaTypegen\Tests\Fixtures\Support\Widget;
 
 class PostController
@@ -45,6 +46,14 @@ class PostController
             'simple' => PostResource::collection(new Paginator([], 15)),
             'cursor' => PostResource::collection(new CursorPaginator([], 15)),
             'names' => (new LengthAwarePaginator([], 0, 15))->through(fn(string $name) => ['name' => $name]),
+        ]);
+    }
+
+    public function grid(): Response
+    {
+        return Inertia::render('posts/grid', [
+            'grid' => Grid::fromItems(new Collection([new Post()]), true),
+            'kind' => Grid::kind(),
         ]);
     }
 

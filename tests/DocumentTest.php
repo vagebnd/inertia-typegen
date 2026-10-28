@@ -7,6 +7,7 @@ use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 it('documents the routes named after the document and the routes under a uri prefix', function () {
     expect(array_keys($this->document()['paths']))->toEqualCanonicalizing([
         '/posts',
+        '/posts/grid',
         '/posts/{post}',
         '/posts/paginated',
         '/posts/status/{status}',
@@ -27,6 +28,7 @@ it('prefixes the operation ids of routes under a uri prefix with the document an
         'app.auth.login',
         'app.auth.register',
         'app.plain',
+        'app.posts.grid',
         'app.posts.index',
         'app.posts.paginated',
         'app.posts.show',

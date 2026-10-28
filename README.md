@@ -101,7 +101,7 @@ class HandleInertiaRequests extends Middleware
 }
 ```
 
-The shared data becomes `Inertia.Shared.App`, and each page type starts with `Inertia.Shared.App &`.
+The shared data becomes `Inertia.Shared.App`, and each page type starts with `Inertia.Shared.App &`. A page prop with the same name as a shared prop replaces it, as in Inertia, so that page type starts with `Omit<Inertia.Shared.App, 'name'> &`.
 
 ## Vite plugin
 
@@ -184,6 +184,8 @@ index.url({ query: { page: 2 } })
 ## Extending
 
 ### PHP
+
+The array shape of a `@return` docblock wins when the inferred body of the method misses one of its keys. The inferred type stays when it has every key, because it is usually richer.
 
 Add your own Scramble extensions to `config/scramble.php`. To give a PHP class a type of its own, extend `SharedComponentTypeInfer`:
 

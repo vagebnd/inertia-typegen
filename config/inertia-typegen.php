@@ -8,6 +8,7 @@ use Vagebond\InertiaTypegen\Extensions\CallbackExtension;
 use Vagebond\InertiaTypegen\Extensions\CastablePropertyExtension;
 use Vagebond\InertiaTypegen\Extensions\CollectionMethodExtension;
 use Vagebond\InertiaTypegen\Extensions\CommonStaticMethodExtension;
+use Vagebond\InertiaTypegen\Extensions\DeclaredArrayShapeExtension;
 use Vagebond\InertiaTypegen\Extensions\EnumHelpersExtension;
 use Vagebond\InertiaTypegen\Extensions\InertiaExtension;
 use Vagebond\InertiaTypegen\Extensions\InertiaResponseTypeToSchema;
@@ -31,6 +32,7 @@ return [
 
     'extensions' => [
         CastablePropertyExtension::class,
+        DeclaredArrayShapeExtension::class,
         InertiaExtension::class,
         InertiaResponseTypeToSchema::class,
         CallbackExtension::class,

@@ -87,3 +87,16 @@ it('documents the sqid of a model with laravel-sqids as a string', function () {
 
     expect(data_get($this->document(), 'components.schemas.CommentResource.properties.id'))->toBe(['type' => 'string']);
 })->skip(! trait_exists(HasSqids::class), 'laravel-sqids requires PHP 8.4');
+
+it('fills a page prop from the return docblock of a static method when the body is not inferable', function () {
+    $grid = data_get($this->document(), 'paths./posts/grid.get.responses.200.content.application/json.schema.allOf.1.properties.grid');
+
+    expect($grid['items']['properties'])->toHaveKeys(['uid', 'title', 'color'])
+        ->and($grid['items']['required'])->toBe(['uid', 'title', 'color']);
+});
+
+it('keeps the inferred shape of a method when it has every key of the return docblock', function () {
+    $kind = data_get($this->document(), 'paths./posts/grid.get.responses.200.content.application/json.schema.allOf.1.properties.kind');
+
+    expect($kind['properties']['kind'])->toBe(['type' => 'string', 'const' => 'grid']);
+});

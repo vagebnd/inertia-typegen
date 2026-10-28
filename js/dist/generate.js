@@ -70,7 +70,9 @@ async function renderInertiaTypes(document, options, context) {
         Schemas: new Map(),
     };
     entries.forEach((entry, index) => {
-        const type = resolveRefs(stripComments(rendered.get(keys[index]) ?? 'unknown').trim(), context, usedImports);
+        let type = resolveRefs(stripComments(rendered.get(keys[index]) ?? 'unknown').trim(), context, usedImports);
+        if (entry.group === 'Pages')
+            type = omitSharedCollisions(type, entry.schema, document, context);
         groups[entry.group].set(entry.path, normalizeEmptyObjects(type));
     });
     const content = await formatCode(buildOutput(groups, context, usedImports), options.fileName, options.format ?? 'auto', options.formatOptions ?? {});
@@ -328,6 +330,26 @@ function resolveRefs(type, context, usedImports) {
         }
         return 'Record<string, unknown>';
     });
+}
+// Inertia lets a page prop replace a shared prop with the same key, so the page
+// type omits those keys from the shared type instead of intersecting them.
+function omitSharedCollisions(type, schema, document, context) {
+    if (!('allOf' in schema) || !schema.allOf)
+        return type;
+    const [shared, page] = schema.allOf;
+    if (!shared || !('$ref' in shared) || !page || '$ref' in page)
+        return type;
+    const name = shared.$ref.slice(SCHEMA_REF_PREFIX.length);
+    const sharedSchema = document.components?.schemas?.[name];
+    if (!name.startsWith(SHARED_PREFIX) || !sharedSchema || '$ref' in sharedSchema)
+        return type;
+    const sharedKeys = Object.keys(('properties' in sharedSchema && sharedSchema.properties) || {});
+    const collisions = Object.keys(('properties' in page && page.properties) || {}).filter((key) => sharedKeys.includes(key));
+    if (collisions.length === 0)
+        return type;
+    const sharedType = `${context.namespace}.Shared.${name.slice(SHARED_PREFIX.length)}`;
+    const omitted = collisions.map((key) => `'${key}'`).join(' | ');
+    return type.replace(`${sharedType} & `, `Omit<${sharedType}, ${omitted}> & `);
 }
 // --- Helpers ---
 function stripComments(type) {

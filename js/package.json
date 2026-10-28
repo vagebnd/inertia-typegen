@@ -1,6 +1,6 @@
 {
   "name": "@vagebond/inertia-typegen",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Generate TypeScript types and route helpers for Inertia pages from Scramble's OpenAPI document",
   "license": "MIT",
   "author": "Gianluca Riggio <luca@maximumawesome.nl>",

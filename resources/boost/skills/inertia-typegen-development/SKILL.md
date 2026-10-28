@@ -49,7 +49,7 @@ The type name comes from the operation id, which is `{document}.{route name}`:
 | `admin.two-factor.enable` | `admin.two-factor.enable` | `Inertia.Pages.TwoFactor.Enable` |
 | `login`, under the URI prefix `auth/` with segment `auth` | `admin.auth.login` | `Inertia.Pages.Auth.Login` |
 
-- A page type is the object part of the 200 JSON response. With shared data it is `Inertia.Shared.{Name} & { ... }`.
+- A page type is the object part of the 200 JSON response. With shared data it is `Inertia.Shared.{Name} & { ... }`. A page prop with the same name as a shared prop replaces it: `Omit<Inertia.Shared.{Name}, 'name'> & { ... }`.
 - A request type is the JSON or multipart request body, mostly from FormRequest `rules()`. A field with a default value is optional.
 - `Inertia.Schemas.{Name}` holds the named component schemas, such as API resources and enums.
 - A page without props is `{}`.
@@ -186,6 +186,6 @@ Hooks: `transformDocument(document)`, `filterRoute(route)`, `routeExportName(rou
 - **A route is missing.** Export the document with `php artisan scramble:export --api=<document> --path=/tmp/doc.json` and search for the path. Check the route name against `route_names` and `uri_prefixes`. A route whose name is only a group prefix, such as `admin.posts.`, gets no helper.
 - **A page is `{}` or has too few props.** Check that the action returns `Inertia::render()` directly and that its declared return type is `Inertia\Response`. A closure or a helper that wraps the render hides the props from Scramble.
 - **Shared data is missing.** Check that the route runs the Inertia middleware and that the middleware has `#[InertiaSharedType]`.
-- **A value is `unknown` or too wide.** `array_filter()`, `$request->only()` and anonymous spreads lose their keys. Build the array explicitly, add a `@return` array shape to `toArray()`, or return a typed object.
+- **A value is `unknown` or too wide.** `array_filter()`, `$request->only()` and anonymous spreads lose their keys. Build the array explicitly, add a `@return` array shape to the method (it wins when the inferred body misses one of its keys), or return a typed object.
 - **A value is `| null`.** Scramble reads nullable database columns and accessors such as `?string`. Fix the source, or add a `PropertyTypeExtension` when the value is never null in practice.
 - **The dev server types are stale.** Restart the dev server. After a package update, run `pnpm install`, because pnpm copies a `file:` dependency.
