@@ -37,6 +37,7 @@ export default defineConfig({
   sitemap: { hostname },
 
   head: [
+    ['script', { defer: '', src: 'https://baken.vagebond.nl/baken.js', 'data-key': 'wAfbg773Y8LzIG6NGULM8yl2' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Inertia Typegen' }],
   ],
