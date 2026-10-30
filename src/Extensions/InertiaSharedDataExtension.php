@@ -255,11 +255,14 @@ class InertiaSharedDataExtension extends OperationExtension
                 $value = $this->unwrapClosures($value);
             }
 
-            return new ArrayItemType_(
+            $unwrapped = new ArrayItemType_(
                 key: $item->key,
                 value: $value,
                 isOptional: $item->isOptional,
             );
+            $unwrapped->mergeAttributes($item->attributes());
+
+            return $unwrapped;
         }, $type->items);
 
         // Filter out non-string keys (e.g., spread of parent::share())

@@ -16,6 +16,13 @@ it('exports the shared data of a middleware with the attribute as one component 
         ->toBe(['$ref' => '#/components/schemas/InertiaSharedApp']);
 });
 
+it('types a shared prop from its var docblock, and a logical operator as a boolean', function () {
+    $properties = data_get($this->document(), 'components.schemas.InertiaSharedApp.properties');
+
+    expect($properties['perPage'])->toBe(['type' => 'integer'])
+        ->and($properties['hasUser'])->toBe(['type' => 'boolean']);
+});
+
 it('merges the shared data into the page when the middleware has no attribute', function () {
     $schema = data_get($this->document(), 'paths./plain.get.responses.200.content.application/json.schema');
 

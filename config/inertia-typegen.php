@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Vagebond\InertiaTypegen\Extensions\ArrayableExtension;
+use Vagebond\InertiaTypegen\Extensions\BooleanOperatorTypeInfer;
 use Vagebond\InertiaTypegen\Extensions\CacheTypeInfer;
 use Vagebond\InertiaTypegen\Extensions\CallbackExtension;
 use Vagebond\InertiaTypegen\Extensions\CastablePropertyExtension;
@@ -46,6 +47,7 @@ return [
         InertiaSharedDataExtension::class,
         TableTypeInfer::class,
         SqidsTypeInfer::class,
+        BooleanOperatorTypeInfer::class,
         RouteMetadataExtension::class,
     ],
 ];

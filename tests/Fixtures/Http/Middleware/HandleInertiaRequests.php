@@ -19,6 +19,9 @@ class HandleInertiaRequests extends Middleware
         return [
             'appName' => 'Fixture',
             'locale' => fn() => 'en',
+            'hasUser' => fn() => $request->user() !== null && $request->hasSession(),
+            /** @var int */
+            'perPage' => fn() => $request->query('per_page'),
         ];
     }
 }
