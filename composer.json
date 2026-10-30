@@ -9,7 +9,7 @@
         "typescript",
         "inertia-typegen"
     ],
-    "homepage": "https://github.com/vagebnd/inertia-typegen",
+    "homepage": "https://inertia-typegen.vagebond.nl",
     "license": "MIT",
     "authors": [
         {
@@ -78,5 +78,8 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "support": {
+        "docs": "https://inertia-typegen.vagebond.nl"
+    }
 }
