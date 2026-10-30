@@ -53,6 +53,28 @@ export default defineConfig({
       ['meta', { property: 'og:description', content: pageData.description || description }],
     ]
 
+    if (pageData.relativePath === 'index.md') {
+      head.push(
+        [
+          'script',
+          { type: 'application/ld+json' },
+          JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'inertia-typegen', url: hostname }),
+        ],
+        [
+          'script',
+          { type: 'application/ld+json' },
+          JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareSourceCode',
+            name: 'inertia-typegen',
+            url: hostname,
+            description: "Inertia Typegen generates TypeScript types and route helpers for Inertia pages from Scramble's OpenAPI document.",
+            codeRepository: repository,
+          }),
+        ],
+      )
+    }
+
     pageData.frontmatter.head = [...(pageData.frontmatter.head ?? []), ...head]
   },
 

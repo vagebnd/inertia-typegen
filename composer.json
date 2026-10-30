@@ -1,13 +1,19 @@
 {
     "name": "vagebond/inertia-typegen",
-    "description": "Generate TypeScript types and route helpers for Inertia pages from Scramble's OpenAPI document",
+    "description": "Generate TypeScript types for Inertia page props, form requests, shared data, resources and PHP enums, and typed route helpers, from your Laravel app through Scramble.",
     "keywords": [
-        "vagebond",
         "laravel",
         "inertia",
-        "scramble",
+        "inertiajs",
         "typescript",
-        "inertia-typegen"
+        "types",
+        "type generator",
+        "route helpers",
+        "form request",
+        "php enum",
+        "scramble",
+        "openapi",
+        "vite"
     ],
     "homepage": "https://inertia-typegen.vagebond.nl",
     "license": "MIT",
