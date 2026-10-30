@@ -40,6 +40,11 @@ export default defineConfig({
     ['script', { defer: '', src: 'https://baken.vagebond.nl/baken.js', 'data-key': 'wAfbg773Y8LzIG6NGULM8yl2' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Inertia Typegen' }],
+    ['meta', { property: 'og:image', content: `${hostname}/card.png` }],
+    ['meta', { property: 'og:image:width', content: '1280' }],
+    ['meta', { property: 'og:image:height', content: '640' }],
+    ['meta', { property: 'og:image:alt', content: 'Inertia Typegen: TypeScript types and route helpers for your Inertia pages' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
 
   transformPageData(pageData) {
