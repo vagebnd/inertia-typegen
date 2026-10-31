@@ -1,4 +1,6 @@
 ---
+title: 'Inertia Typegen Vite plugin: types after each PHP change'
+titleTemplate: false
 description: Add the inertia-typegen Vite plugin. It writes the Inertia types and the route helpers, and generates them again after a PHP change.
 ---
 

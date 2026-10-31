@@ -50,7 +50,12 @@ export default defineConfig({
   transformPageData(pageData) {
     const path = pageData.relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
     const url = `${hostname}/${path}`
-    const title = pageData.relativePath === 'index.md' ? 'Inertia Typegen' : `${pageData.title} | Inertia Typegen`
+    const title =
+      pageData.relativePath === 'index.md'
+        ? 'Inertia Typegen'
+        : pageData.frontmatter.titleTemplate === false
+          ? pageData.title
+          : `${pageData.title} | Inertia Typegen`
     const head: HeadConfig[] = [
       ['link', { rel: 'canonical', href: url }],
       ['meta', { property: 'og:url', content: url }],

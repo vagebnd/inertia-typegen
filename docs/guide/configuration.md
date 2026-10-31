@@ -1,4 +1,6 @@
 ---
+title: 'Configure Inertia Typegen: documents, expose, shared data'
+titleTemplate: false
 description: Configure the documents of inertia-typegen, the enum helpers, the access to the OpenAPI document and the shared data of your Inertia middleware.
 ---
 

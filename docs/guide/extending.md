@@ -1,4 +1,6 @@
 ---
+title: 'Extend Inertia Typegen: docblocks, bridges and plugins'
+titleTemplate: false
 description: Extend inertia-typegen with docblock shapes, your own Scramble extensions, the bundled bridges and plugins for the generator.
 ---
 

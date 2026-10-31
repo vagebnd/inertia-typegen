@@ -1,4 +1,6 @@
 ---
+title: 'Laravel Boost guideline and skill | Inertia Typegen'
+titleTemplate: false
 description: The Laravel Boost guideline and skill of inertia-typegen tell AI assistants to use the generated types and route helpers.
 ---
 

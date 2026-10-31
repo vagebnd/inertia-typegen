@@ -1,4 +1,6 @@
 ---
+title: 'Use page types and route helpers | Inertia Typegen'
+titleTemplate: false
 description: Use the generated Inertia page types, request types and route helpers in your Vue pages and forms.
 ---
 

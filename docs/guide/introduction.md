@@ -1,4 +1,6 @@
 ---
+title: 'Introduction to Inertia Typegen: what it generates'
+titleTemplate: false
 description: What inertia-typegen generates from a Laravel and Inertia app, and how the steps from your controllers to TypeScript work.
 ---
 

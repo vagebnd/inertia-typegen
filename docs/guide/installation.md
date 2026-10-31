@@ -1,4 +1,6 @@
 ---
+title: 'Install Inertia Typegen with Composer and Scramble'
+titleTemplate: false
 description: Install inertia-typegen with Composer and Scramble, add the JS part to package.json, and publish the configuration file.
 ---
 

@@ -1,4 +1,6 @@
 ---
+title: 'Inertia Typegen CLI: generate types and check them in CI'
+titleTemplate: false
 description: Generate the Inertia types and route helpers with the inertia-typegen CLI, and check in CI that the committed files are current.
 ---
 
