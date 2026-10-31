@@ -1,5 +1,7 @@
 # Inertia Typegen
 
+Docs and site: https://inertia-typegen.vagebond.nl
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vagebond/inertia-typegen.svg?style=flat-square)](https://packagist.org/packages/vagebond/inertia-typegen)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vagebnd/inertia-typegen/run-tests.yml?branch=main&label=tests)](https://github.com/vagebnd/inertia-typegen/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/vagebnd/inertia-typegen/fix-php-code-style-issues.yml?branch=main)](https://github.com/vagebnd/inertia-typegen/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
