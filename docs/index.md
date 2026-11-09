@@ -4,31 +4,42 @@ title: Inertia Typegen
 titleTemplate: TypeScript types and route helpers for Laravel and Inertia
 description: Generate TypeScript types and route helpers for Inertia pages from your Laravel routes, controllers and form requests, through Scramble.
 
-hero:
+landing:
   name: Inertia Typegen
-  text: TypeScript types for Inertia pages, from your Laravel code
-  tagline: Page props, form requests, shared data and route helpers, generated through Scramble. You write no types by hand.
-  actions:
-    - theme: brand
-      text: Get started
-      link: /guide/introduction
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/vagebnd/inertia-typegen
+  title: TypeScript types for Inertia pages, from your Laravel code.
+  lead: Page props, form requests, shared data and route helpers, generated through Scramble. You write no types by hand.
+  primary:
+    text: Get started
+    link: /guide/introduction
+  secondary:
+    text: View on GitHub
+    link: https://github.com/vagebnd/inertia-typegen
+  install: composer require vagebond/inertia-typegen
+  chips: [Laravel 12 and 13, Inertia 2 and 3, Scramble, Vite]
 
-features:
-  - title: Page props
-    details: Each Inertia::render() call becomes a page type. Deferred props are optional.
-  - title: Form requests
-    details: The rules of a form request become the type of its form data.
-  - title: Resources and paginators
-    details: JSON resources, collections and paginators keep their real shape, data included.
-  - title: Route helpers
-    details: Each named route gets a typed helper that builds its URL.
-  - title: Live in development
-    details: The Vite dev server generates the files again after a PHP change.
-  - title: Checked in CI
-    details: inertia-typegen --check fails when the committed files are stale.
+highlights:
+  eyebrow: What it generates
+  title: Every type that a page needs.
+  text: The generator reads your routes, controllers and form requests. Your pages get the same shapes that PHP sends.
+  items:
+    - icon: page
+      title: Page props
+      details: Each Inertia::render() call becomes a page type. Deferred props are optional.
+    - icon: form
+      title: Form requests
+      details: The rules of a form request become the type of its form data.
+    - icon: resource
+      title: Resources and paginators
+      details: JSON resources, collections and paginators keep their real shape, data included.
+    - icon: route
+      title: Route helpers
+      details: Each named route gets a typed helper that builds its URL.
+    - icon: live
+      title: Live in development
+      details: The Vite dev server generates the files again after a PHP change.
+    - icon: check
+      title: Checked in CI
+      details: inertia-typegen --check fails when the committed files are stale.
 ---
 
 ## From PHP to TypeScript

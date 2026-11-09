@@ -3,6 +3,8 @@ import { join } from 'node:path'
 
 import { defineConfig, type HeadConfig } from 'vitepress'
 
+import { codeDark, codeLight } from './code-theme'
+
 const hostname = 'https://inertia-typegen.vagebond.nl'
 const repository = 'https://github.com/vagebnd/inertia-typegen'
 const description =
@@ -35,9 +37,13 @@ export default defineConfig({
   lang: 'en',
   cleanUrls: true,
   sitemap: { hostname },
+  markdown: { theme: { light: codeLight, dark: codeDark } },
 
   head: [
     ['script', { defer: '', src: 'https://baken.vagebond.nl/baken.js', 'data-key': 'wAfbg773Y8LzIG6NGULM8yl2' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['meta', { name: 'theme-color', content: '#0b0c0e', media: '(prefers-color-scheme: dark)' }],
+    ['meta', { name: 'theme-color', content: '#fcfdfd', media: '(prefers-color-scheme: light)' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Inertia Typegen' }],
     ['meta', { property: 'og:image', content: `${hostname}/card.png` }],
@@ -121,6 +127,7 @@ export default defineConfig({
   },
 
   themeConfig: {
+    logo: { src: '/logo.svg', alt: '' },
     nav: [
       { text: 'Guide', link: '/guide/introduction' },
       { text: 'Changelog', link: `${repository}/blob/main/CHANGELOG.md` },
