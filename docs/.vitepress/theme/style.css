@@ -12,10 +12,10 @@
   --vp-c-text-2: #45484d;
   --vp-c-text-3: #60636a;
 
-  --vp-c-brand-1: #3552bc;
-  --vp-c-brand-2: #4564d0;
-  --vp-c-brand-3: #4d6eda;
-  --vp-c-brand-soft: rgba(77, 110, 218, 0.12);
+  --vp-c-brand-1: #314ede;
+  --vp-c-brand-2: #3f62f3;
+  --vp-c-brand-3: #496fff;
+  --vp-c-brand-soft: rgba(73, 111, 255, 0.12);
 
   --vp-c-default-1: #cfd1d5;
   --vp-c-default-2: #e2e3e6;
@@ -24,7 +24,7 @@
 
   --vp-code-block-bg: #f6f7f9;
   --vp-code-bg: rgba(96, 99, 106, 0.1);
-  --vp-code-color: #3552bc;
+  --vp-code-color: #314ede;
   --vp-code-lang-color: var(--vp-c-text-3);
   --vp-code-copy-code-bg: var(--vp-c-bg-elv);
   --vp-code-tab-bg: var(--vp-code-block-bg);
@@ -46,18 +46,19 @@
 
   --tg-strong: #0d0e10;
   --tg-surface: rgba(255, 255, 255, 0.7);
-  --tg-light: rgba(77, 110, 218, 0.16);
-  --tg-light-strong: rgba(77, 110, 218, 0.6);
+  --tg-light: rgba(73, 111, 255, 0.2);
+  --tg-light-low: rgba(140, 90, 255, 0.1);
+  --tg-light-strong: rgba(73, 111, 255, 0.7);
   --tg-grid: rgba(25, 27, 29, 0.05);
   --tg-primary-bg: #111214;
   --tg-primary-hover: #26282c;
   --tg-primary-text: #ffffff;
-  --tg-primary-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 10px 30px -12px rgba(53, 82, 188, 0.55);
-  --tg-primary-shadow-hover: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 12px 36px -10px rgba(53, 82, 188, 0.7);
+  --tg-primary-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 10px 30px -12px rgba(63, 98, 243, 0.65);
+  --tg-primary-shadow-hover: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 12px 36px -10px rgba(63, 98, 243, 0.8);
   --tg-window-border: #e2e3e6;
   --tg-window-shadow: 0 1px 2px rgba(16, 18, 24, 0.04), 0 24px 60px -30px rgba(16, 18, 24, 0.25);
   --tg-window-shadow-front:
-    0 1px 2px rgba(16, 18, 24, 0.05), 0 40px 80px -36px rgba(16, 18, 24, 0.35), 0 30px 90px -40px rgba(53, 82, 188, 0.35);
+    0 1px 2px rgba(16, 18, 24, 0.05), 0 40px 80px -36px rgba(16, 18, 24, 0.35), 0 30px 90px -40px rgba(63, 98, 243, 0.45);
 }
 
 .dark {
@@ -74,10 +75,10 @@
   --vp-c-text-2: #afb1b6;
   --vp-c-text-3: #8f9299;
 
-  --vp-c-brand-1: #8aa8f7;
-  --vp-c-brand-2: #6b8cee;
-  --vp-c-brand-3: #4d6eda;
-  --vp-c-brand-soft: rgba(107, 140, 238, 0.16);
+  --vp-c-brand-1: #91b5ff;
+  --vp-c-brand-2: #6c94ff;
+  --vp-c-brand-3: #5178ff;
+  --vp-c-brand-soft: rgba(108, 148, 255, 0.18);
 
   --vp-c-default-1: #313337;
   --vp-c-default-2: #25272a;
@@ -86,7 +87,7 @@
 
   --vp-code-block-bg: #0f1013;
   --vp-code-bg: rgba(143, 146, 153, 0.14);
-  --vp-code-color: #a9bcf9;
+  --vp-code-color: #a6c3ff;
 
   --vp-button-brand-bg: #eeeff1;
   --vp-button-brand-text: #08090a;
@@ -99,18 +100,19 @@
 
   --tg-strong: #f7f8f8;
   --tg-surface: rgba(255, 255, 255, 0.03);
-  --tg-light: rgba(77, 110, 218, 0.2);
-  --tg-light-strong: rgba(107, 140, 238, 0.9);
+  --tg-light: rgba(81, 120, 255, 0.3);
+  --tg-light-low: rgba(140, 90, 255, 0.14);
+  --tg-light-strong: rgba(108, 148, 255, 0.95);
   --tg-grid: rgba(255, 255, 255, 0.035);
   --tg-primary-bg: #eeeff1;
   --tg-primary-hover: #ffffff;
   --tg-primary-text: #08090a;
-  --tg-primary-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 10px 40px -10px rgba(107, 140, 238, 0.7);
-  --tg-primary-shadow-hover: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 12px 50px -8px rgba(107, 140, 238, 0.9);
+  --tg-primary-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 10px 40px -10px rgba(108, 148, 255, 0.85);
+  --tg-primary-shadow-hover: 0 0 0 1px rgba(255, 255, 255, 0.22), 0 12px 50px -8px rgba(108, 148, 255, 1);
   --tg-window-border: rgba(255, 255, 255, 0.08);
   --tg-window-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 30px 80px -30px rgba(0, 0, 0, 0.9);
   --tg-window-shadow-front:
-    0 0 0 1px rgba(0, 0, 0, 0.6), 0 50px 120px -30px rgba(0, 0, 0, 0.95), 0 40px 120px -40px rgba(77, 110, 218, 0.45);
+    0 0 0 1px rgba(0, 0, 0, 0.6), 0 50px 120px -30px rgba(0, 0, 0, 0.95), 0 40px 120px -40px rgba(81, 120, 255, 0.6);
 }
 
 :root {
@@ -131,8 +133,7 @@ body {
   background-color: var(--vp-c-divider);
 }
 
-.VPNavBar:not(.home.top) .content-body,
-.VPNavBar.has-sidebar .content-body {
+.VPNavBar:not(.home.top) {
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   backdrop-filter: saturate(180%) blur(16px);
 }

@@ -1,7 +1,10 @@
 <template>
   <section v-if="landing" class="tg-hero">
-    <div class="tg-hero-light" aria-hidden="true" />
-    <div class="tg-hero-grid" aria-hidden="true" />
+    <div class="tg-hero-bg" aria-hidden="true">
+      <div class="tg-hero-light" />
+      <div class="tg-hero-light tg-hero-light-low" />
+      <div class="tg-hero-grid" />
+    </div>
 
     <div class="tg-hero-inner">
       <div class="tg-hero-copy">
@@ -98,9 +101,17 @@ async function copy() {
   padding: calc(var(--vp-nav-height) + 64px) 24px 64px;
 }
 
-.tg-hero-light {
+.tg-hero-bg {
   position: absolute;
   z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  pointer-events: none;
+}
+
+.tg-hero-light {
+  position: absolute;
   top: -360px;
   right: -220px;
   width: 1100px;
@@ -109,9 +120,17 @@ async function copy() {
   pointer-events: none;
 }
 
+.tg-hero-light-low {
+  top: 35%;
+  right: auto;
+  left: -420px;
+  width: 1000px;
+  height: 760px;
+  background: radial-gradient(closest-side, var(--tg-light-low), transparent);
+}
+
 .tg-hero-grid {
   position: absolute;
-  z-index: -2;
   inset: 0;
   background-image:
     linear-gradient(var(--tg-grid) 1px, transparent 1px),
