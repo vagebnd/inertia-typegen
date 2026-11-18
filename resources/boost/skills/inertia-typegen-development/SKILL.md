@@ -54,6 +54,7 @@ The type name comes from the operation id, which is `{document}.{route name}`:
 - `Inertia.Schemas.{Name}` holds the named component schemas, such as API resources and enums.
 - A page without props is `{}`.
 - Props from `Inertia::defer()`, `Inertia::optional()` and `Inertia::lazy()` are optional.
+- A prop from `Inertia::live()`, `Inertia::merge()`, `Inertia::deepMerge()`, `Inertia::always()`, `Inertia::once()` or `Inertia::scroll()` has the type of its value and is required. A `->live()` call after `Inertia::defer()` or `Inertia::optional()` keeps the prop optional.
 - A paginated resource collection, and a paginator mapped with `->through()`, becomes the paginator array (`data`, `current_page`, `links` and the other paginator keys).
 
 ## Using the route helpers

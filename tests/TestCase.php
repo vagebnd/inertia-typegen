@@ -62,6 +62,9 @@ class TestCase extends Orchestra
             $router->get('posts/paginated', [PostController::class, 'paginated'])->name('app.posts.paginated');
             $router->get('posts/status/{status}', [PostController::class, 'status'])->name('app.posts.status');
             $router->get('posts/grid', [PostController::class, 'grid'])->name('app.posts.grid');
+            $router->get('posts/followed', [PostController::class, 'followed'])->name('app.posts.followed');
+            $router->get('posts/live', [PostController::class, 'live'])->name('app.posts.live');
+            $router->get('posts/merged', [PostController::class, 'merged'])->name('app.posts.merged');
             $router->get('posts/{post}', [PostController::class, 'show'])->name('app.posts.show');
             $router->post('posts', [PostController::class, 'store'])->name('app.posts.store');
             $router->get('auth/login', [AuthController::class, 'login'])->name('login');

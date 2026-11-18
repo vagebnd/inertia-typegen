@@ -38,6 +38,65 @@ it('documents the page props and marks deferred props optional', function () {
         ->and($page['required'])->not->toContain('stats');
 });
 
+it('types a live prop as its value and keeps it required', function () {
+    $page = data_get($this->document(), 'paths./posts/live.get.responses.200.content.application/json.schema.allOf.1');
+
+    expect($page['properties']['total'])->toBe(['type' => 'integer', 'const' => 1])
+        ->and($page['properties']['latest']['properties'])->toBe(['title' => ['type' => 'string', 'const' => 'Post']])
+        ->and($page['properties']['heading'])->toBe(['type' => 'string', 'const' => 'Posts'])
+        ->and($page['properties']['counts']['properties'])->toBe(['published' => ['type' => 'integer', 'const' => 1]])
+        ->and($page['required'])->toContain('total', 'latest', 'heading', 'counts');
+});
+
+it('types a live prop from a helper method as the value that the helper receives', function () {
+    $page = data_get($this->document(), 'paths./posts/live.get.responses.200.content.application/json.schema.allOf.1');
+
+    expect($page['properties']['helper']['properties'])->toBe(['count' => ['type' => 'integer', 'const' => 1]])
+        ->and($page['required'])->toContain('helper');
+});
+
+it('prefers the var docblock of a live prop and of a merge prop to the inferred type', function () {
+    $document = $this->document();
+    $rooms = data_get($document, 'paths./posts/live.get.responses.200.content.application/json.schema.allOf.1.properties.rooms');
+    $events = data_get($document, 'paths./posts/merged.get.responses.200.content.application/json.schema.allOf.1.properties.events');
+
+    expect($rooms['items']['properties'])->toBe(['id' => ['type' => 'integer'], 'name' => ['type' => 'string']])
+        ->and($events['items']['properties'])->toBe(['id' => ['type' => 'integer'], 'text' => ['type' => 'string']]);
+});
+
+it('keeps the page props when a macro call follows the render call', function () {
+    $page = data_get($this->document(), 'paths./posts/followed.get.responses.200.content.application/json.schema.allOf.1');
+
+    expect($page['properties'])->toBe(['count' => ['type' => 'integer', 'const' => 1]]);
+});
+
+it('types a prop with a live call after another prop method, and keeps only deferred and optional props optional', function () {
+    $page = data_get($this->document(), 'paths./posts/live.get.responses.200.content.application/json.schema.allOf.1');
+
+    foreach (['activity', 'drafts', 'pinned', 'summary'] as $prop) {
+        expect($page['properties'][$prop]['properties'])->toBe(['count' => ['type' => 'integer', 'const' => 1]]);
+    }
+
+    expect($page['required'])->toContain('pinned', 'summary')
+        ->and($page['required'])->not->toContain('activity')
+        ->and($page['required'])->not->toContain('drafts');
+});
+
+it('types a shared live prop as its value', function () {
+    expect(data_get($this->document(), 'components.schemas.InertiaSharedApp.properties.unread'))
+        ->toBe(['type' => 'integer', 'const' => 3]);
+});
+
+it('types merge, deep merge, always and once props as their value', function () {
+    $page = data_get($this->document(), 'paths./posts/merged.get.responses.200.content.application/json.schema.allOf.1');
+
+    expect($page['properties']['tags']['properties'])->toBe(['name' => ['type' => 'string', 'const' => 'php']])
+        ->and($page['properties']['filters']['properties'])->toBe(['status' => ['type' => 'string', 'const' => 'draft']])
+        ->and($page['properties']['notice'])->toBe(['type' => 'string', 'const' => 'Saved'])
+        ->and($page['properties']['plan']['properties'])->toBe(['name' => ['type' => 'string', 'const' => 'free']])
+        ->and($page['required'])->toBe(['tags', 'filters', 'notice', 'plan', 'events']);
+});
+
 it('infers enum helper methods from the configured trait', function () {
     $document = $this->document();
     $index = data_get($document, 'paths./posts.get.responses.200.content.application/json.schema.allOf.1.properties');

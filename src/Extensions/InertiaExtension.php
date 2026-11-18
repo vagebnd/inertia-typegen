@@ -51,6 +51,21 @@ class InertiaExtension implements ExpressionTypeInferExtension
         'modal' => Modal::class,
     ];
 
+    /**
+     * @var array<string, string>
+     */
+    private const PROP_VALUE_PARAMETERS = [
+        'lazy' => 'callback',
+        'optional' => 'callback',
+        'defer' => 'callback',
+        'merge' => 'value',
+        'deepMerge' => 'value',
+        'always' => 'value',
+        'scroll' => 'value',
+        'once' => 'value',
+        'live' => 'value',
+    ];
+
     public function getType(Expr $node, Scope $scope): ?Type
     {
         if ($node instanceof StaticCall && $node->class instanceof FullyQualified && $node->class->toString() === Inertia::class) {
@@ -141,8 +156,10 @@ class InertiaExtension implements ExpressionTypeInferExtension
             return new Generic($responseClass, [$propsType, new LiteralIntegerType(200)]);
         }
 
-        if (in_array($node->name->toString(), ['lazy', 'defer', 'optional', 'scroll']) && count($node->args) > 0) {
-            $argType = TypeHelper::getArgType($scope, $node->args, ['content', 0], new ArrayType());
+        $valueParameter = self::PROP_VALUE_PARAMETERS[$node->name->toString()] ?? null;
+
+        if ($valueParameter !== null && count($node->args) > 0) {
+            $argType = TypeHelper::getArgType($scope, $node->args, [$valueParameter, 0], new ArrayType());
             $resolvedType = ReferenceTypeResolver::getInstance()->resolve($scope, $argType);
 
             return $this->transformPaginatedCollection($resolvedType) ?? $argType;

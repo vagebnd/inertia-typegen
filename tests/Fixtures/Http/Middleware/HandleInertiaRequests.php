@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Vagebond\InertiaTypegen\Tests\Fixtures\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 use Vagebond\InertiaTypegen\Attributes\InertiaSharedType;
 
@@ -22,6 +23,7 @@ class HandleInertiaRequests extends Middleware
             'hasUser' => fn() => $request->user() !== null && $request->hasSession(),
             /** @var int */
             'perPage' => fn() => $request->query('per_page'),
+            'unread' => Inertia::live(fn() => 3, on: 'PostPublished', channel: 'posts'),
         ];
     }
 }
