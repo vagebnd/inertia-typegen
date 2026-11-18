@@ -2,6 +2,21 @@
 
 All notable changes to `inertia-typegen` will be documented in this file.
 
+## v0.1.4 - 2026-11-18
+
+### Changes
+
+- Inertia live props (inertia-laravel 3.7): a prop from `Inertia::live()` gets the type of its value and stays required.
+- A `->live()` call after `Inertia::always()` or `Inertia::once()` gets the type of the value. After `Inertia::defer()` or `Inertia::optional()`, the prop stays optional.
+- A helper method that returns `Inertia::live($value, ...)` gets the type of the value that it receives.
+- Props from `Inertia::merge()`, `Inertia::deepMerge()`, `Inertia::always()` and `Inertia::once()` get the type of their value. Before, they were an untyped object.
+- A named value argument works: `Inertia::live(on: ..., value: ...)`.
+- A `@var` docblock above a shared closure prop sets its type.
+- `BooleanOperatorTypeInfer` types `&&`, `||`, `and`, `or` and `xor` as boolean. An application with a published config file must add it to the `extensions` list.
+- `composer.json` has the docs site as its homepage, and more search words.
+
+**Full Changelog**: https://github.com/vagebnd/inertia-typegen/compare/v0.1.3...v0.1.4
+
 ## v0.1.3 - 2026-10-28
 
 A page prop that replaces a shared prop with the same name renders Omit<Inertia.Shared.X, name> & { ... } instead of an intersection. DeclaredArrayShapeExtension uses the array shape of a @return docblock when the inferred return type misses one of its keys, and keeps the inferred type when it has every key.
